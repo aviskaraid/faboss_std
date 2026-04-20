@@ -1,0 +1,3 @@
+    'username' => 'bora3555_admin_finboss',
+    'password' => 'p@$$uu0rDkU',
+    'database' => 'bora3555_finboss',	

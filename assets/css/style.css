@@ -1,0 +1,260 @@
+#namaAkunJurnal {
+	overflow-y: hidden;
+}
+
+.modal-journal {
+	width: 100%;
+}
+
+.className {
+   -webkit-appearance: menulist-button;
+   height: 50px;
+}
+
+.table-journal {
+	width: 800px;
+}
+
+.table-role {
+  width: 400px;
+}
+
+.table-user-management {
+  width: 1000px;
+}
+
+.table-menu {
+  width: 400px;
+}
+
+.table-dataAkun {
+  width: 1400px;
+}
+/*Versi Desktop*/
+@media (min-width: 768px) {
+    .container {
+        margin-top: 20px;
+    }
+
+    .table-journal, .table-role, .table-user-management, .table-menu, .table-dataAkun {
+    	width: 100%;
+    }
+
+    .description img {
+      height: 40px;
+    }
+}
+
+.datepicker-wrapper {
+    position: relative;
+    display: inline-flex;
+    width: 100%;
+}
+
+.datepicker-wrapper input.form-control {
+    padding-right: 40px;
+}
+
+.datepicker-icon {
+    position: absolute;
+    right: 12px;
+    top: 0;
+    bottom: 0;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    color: #666;
+}
+
+/* =========================================================
+   GLOBAL THEME VARIABLES
+   ========================================================= */
+:root {
+    /* Sidebar colors */
+    --sidebar-dark-1: #1F4F32;
+    --sidebar-dark-2: #2F6B3F;
+    --sidebar-dark-3: #163824;
+
+    /* Brand / accent colors */
+    --theme-primary: #2F6B3F;
+    --theme-primary-dark: #1F4F32;
+    --theme-primary-soft: #E4F3EA;
+
+    /* Text colors */
+    --text-on-dark: rgba(255, 255, 255, 0.95);
+    --text-on-dark-muted: rgba(255, 255, 255, 0.7);
+}
+
+/* =========================================================
+   GLOBAL COMPONENT THEME
+   ========================================================= */
+/* Normal state */
+
+.btn-theme.btn-user {
+    background-color: var(--theme-primary) !important;
+    border-color: var(--theme-primary) !important;
+    color: #ffffff !important;
+}
+
+/* Hover */
+.btn-theme.btn-user:hover {
+    background-color: var(--theme-primary-dark) !important;
+    border-color: var(--theme-primary-dark) !important;
+    color: #ffffff !important;
+}
+
+/* Focus / active */
+.btn-theme.btn-user:focus,
+.btn-theme.btn-user:active {
+    background-color: var(--theme-primary-dark) !important;
+    border-color: var(--theme-primary-dark) !important;
+    box-shadow: 0 0 0 0.2rem rgba(47, 107, 63, 0.25);
+    color: #ffffff !important;
+}
+
+/* Outline button */
+.btn-theme-outline {
+    background-color: transparent;
+    border: 1px solid var(--theme-primary);
+    color: var(--theme-primary);
+}
+
+.btn-theme-outline:hover {
+    background-color: var(--theme-primary);
+    color: #fff;
+}
+
+/* Cards */
+.card-theme {
+    border-left: 4px solid var(--theme-primary);
+}
+
+.card-theme .card-header {
+    background-color: var(--theme-primary-soft);
+    font-weight: 600;
+    color: var(--theme-primary-dark);
+}
+
+.card.border-primary {
+    border: 1px solid var(--theme-primary);
+}
+
+.card-header.border-bottom-primary {
+    border-bottom: 1px solid var(--theme-primary);
+}
+
+/* Form */
+.form-control:focus {
+    border-color: var(--theme-primary);
+    box-shadow: 0 0 0 0.2rem rgba(47, 107, 63, 0.2);
+}
+
+
+/* Badges */
+.badge-theme {
+    background-color: var(--theme-primary);
+    color: #fff;
+}
+
+/* Tables */
+.table-theme thead {
+    background-color: var(--theme-primary-soft);
+    color: var(--theme-primary-dark);
+}
+
+.table-bordered th,
+.table-bordered td {
+    border-color: rgba(47, 107, 63, 0.15);
+}
+
+
+/* =========================================================
+   AUTH / LOGIN PAGE SUPPORT (OPTIONAL)
+   ========================================================= */
+body.auth-page {
+    background-color: var(--theme-primary-soft);
+}
+
+/* =========================================================
+   PRIMARY COLOR OVERRIDES (SB ADMIN / BOOTSTRAP)
+   ========================================================= */
+
+.bg-primary {
+    background-color: var(--theme-primary) !important;
+}
+
+.text-primary {
+    color: var(--theme-primary) !important;
+}
+
+.btn-primary {
+    background-color: var(--theme-primary);
+    border-color: var(--theme-primary);
+}
+
+.btn-primary:hover {
+    background-color: var(--theme-primary-dark);
+    border-color: var(--theme-primary-dark);
+}
+
+.badge-primary {
+    background-color: var(--theme-primary);
+}
+
+.progress-bar {
+    background-color: var(--theme-primary);
+}
+
+.page-item.active .page-link {
+    background-color: var(--theme-primary);
+    border-color: var(--theme-primary);
+}
+
+.page-link {
+    color: var(--theme-primary);
+}
+
+/* =========================================================
+   PRIMARY BORDER UTILITIES
+   ========================================================= */
+
+.border-primary {
+    border-color: var(--theme-primary) !important;
+}
+
+.border-top-primary {
+    border-top-color: var(--theme-primary) !important;
+}
+
+.border-right-primary {
+    border-right-color: var(--theme-primary) !important;
+}
+
+.border-bottom-primary {
+    border-bottom-color: var(--theme-primary) !important;
+}
+
+.border-left-primary {
+    border-left-color: var(--theme-primary) !important;
+}
+
+
+/* =========================================================
+   DASHBOARD BACKGROUND IMAGE
+   ========================================================= */
+
+#content-wrapper {
+    background-image: url("../img/bg_2.jpg");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+}
+
+#content-wrapper::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background: rgba(255, 255, 255, 0.85);
+    z-index: -1;
+}

@@ -1,0 +1,16 @@
+Array
+(
+    [POST] => Array
+        (
+            [no_ref] => ABC001
+            [id_customer] => 2
+            [id_pendapatan] => 2
+            [tgl_invoice] => 20-04-2026
+            [jt_tempo] => 30-04-2026
+            [nilai] => Rp. 3.000.000
+            [deskripsi] => test piutang darwin
+        )
+
+)
+
+====================

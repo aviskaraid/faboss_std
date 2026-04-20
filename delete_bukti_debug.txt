@@ -1,0 +1,5 @@
+DELETE BUKTI CALLED
+Received file: 1769671566212090087.jpg
+Full path: D:\xampp81\htdocs\finboss\assets/file/bukti/1769671566212090087.jpg
+FILE DELETED SUCCESS
+DATABASE UPDATED

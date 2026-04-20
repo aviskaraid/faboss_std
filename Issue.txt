@@ -1,0 +1,32 @@
+Permasalahan:
+27/03/2020
+- Edit User Managemen (Solved)
+- Cetak Jurnal Umum (Solved) Tgl 29/03/2020
+- Cetak Report Buku Besar (Important) (Solved) 
+- Cetak Report Neraca Saldo (Important) (Solved)
+- Cetak Report Lap. Laba Rugi (Important) (Solved)
+- Alert ada tanda silangnya (Solved)
+- Hapus satu baris pada array edit jurnal; jika array ini tinggal 1 baris maka, hilangkan tanda silang (Solved)
+- Rupiah pada Nominal (Rp. 20.000.000,-) (Solved)
+
+28/03/2020
+- Cetak Report Buku Besar - Dihalaman (Solved)
+- Cetak Report Neraca Saldo - Dihalaman (Solved) ----- Penyebab semua bisa, Wkwkwkw
+- Inputan tidak hilang ketika salah input (Dimunculkan di javascript aja biar tidak mereload) (Solved)
+- Jarak 1 bulan, tglAwal dan tglAkhir (Solved)
+- Menyisipkan Saldo Awal di buku besar (Solved)
+- Untuk bagian Keuangan tidak bisa akses Company Profile (Manajemen) (Important) (Solved)
+- Edit profile diperbaiki (Controller) (Solved)
+
+29/03/2020
+- jurnal umum data terbaru diatas (Solved) 
+- Edit di jurnal umum (Solved)
+
+03/04/2020
+- Cek Trial Balancesheet (Solved)(
+- Cetak Report Lap. Perubahan Ekuitas (Important) (Solved)
+- Cetak Report Lap. Neraca (Important) ----- (Solved)
+- Cetak Report Lap. Arus Kas (Important) ----- (Solved)
+- Bagian direktur tidak bisa edit, hapus, tambah di master data dan jurnal umum. (hidden) ----- (Solved) (Solusi cek rol_id di masing masing file, lalu hidden )
+- Bug Edit di journal Umum ----- (Solved)
+- lap laba rugi, perubahan ekuitas, neraca, laba rugi dibuat perbulan ... (Solved)
