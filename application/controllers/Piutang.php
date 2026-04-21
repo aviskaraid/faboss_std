@@ -376,7 +376,7 @@ class Piutang extends CI_Controller
 			<button type="button" class="close" data-dismiss="alert" aria-label="Close">
 		    	<span aria-hidden="true">&times;</span>
 		  	</button></div>');
-			redirect('transaksipendapatan');
+			redirect('piutang');
 	}
 
 	public function pembayaran()
@@ -398,7 +398,8 @@ class Piutang extends CI_Controller
 		$nominal 	= str_replace($hide, "", $nominal_);		
 		$id_user = $dt_user['id_user'];
 
-
+		// ambil akun hutang untuk jurnal
+		$dt_by_id_piutang = $this->utang->getAkunCustomerById($id_piutang);
 
     	$tgl_check = date('Y-m-d', strtotime($tgl));
     	$this->load->model('Periode_model','periode');
@@ -414,7 +415,7 @@ class Piutang extends CI_Controller
 
     		// akun kredit (piutang usaha)	
     		$id_akun_debit = $dt_by_id_kas['id_akun']; //akun kas
-    		$id_akun_kredit = 5; //akun piutang usaha
+    		$id_akun_kredit = $dt_by_id_piutang['id_akun']; //akun piutang usaha
     
     		// mencari transaksi selanjutnya
     		$this->load->model('Setting_model','setting');

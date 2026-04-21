@@ -39,7 +39,7 @@
 					      	<div class="form-group row">
 					      		<label for="noTransaksi" class="col-sm-3 col-form-label">Nomor Transaksi</label>
 				    			<div class="col-sm-9">
-							    	<input type="text" class="form-control" id="noTransaksi" name="noTransaksi" value="<?= $dt_byID['no_trans']; ?>" readonly>
+							    	<input type="text" class="form-control" id="noTransaksi" name="noTransaksi" value="<?= $no_trans; ?>" readonly>
 							    </div>
 							</div>
 							<div class="form-group row">

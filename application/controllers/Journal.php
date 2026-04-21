@@ -159,12 +159,21 @@ class Journal extends CI_Controller
 		$this->load->model('Masterdata_model','masterdata');
 		$this->load->model('Kas_model','kas');
 		$this->load->model('Admin_model','admin');
-		//menampilkan semua data
+		$this->load->model('Setting_model','setting');
 
+
+		//menampilkan semua data
 		$data['dt_byID'] = $this->admin->GetDataById('jurnal', 'id_jurnal', $id);
     	$data['dt_detail'] = $this->journal->proses_detail_journal($id);
 
+		date_default_timezone_set('Asia/Jakarta');
+		$tahun = date('Y', strtotime($data['dt_byID']['tgl']));
+        $bulan = date('m', strtotime($data['dt_byID']['tgl']));
 
+		$type_trans = 1;
+		$setJu = $this->setting->getPenomoranByIdMenu($type_trans); 
+		$data['no_urut'] = $data['dt_byID']['no_trans'];
+		$data['no_trans'] = sprintf('%0'.$setJu['panjang_nomor'].'d', (int)$data['dt_byID']['no_trans']).'/'.$setJu['prefix'].'/'.$bulan.'/'.$tahun;
 
     	//menampilkan data akun
     	$this->db->order_by('kelompok_akun.kel_akun', 'ASC');

@@ -8,14 +8,15 @@ class Supplier_model extends CI_Model
 	{
 		$this->db->select('
 			supplier.id_supplier,
+			supplier.kode,
 			supplier.nama_supplier,
 			supplier.alamat_supplier,
 			supplier.id_akun,
 			akun.noakun,
 			COALESCE(SUM(
 				CASE 
-					WHEN jurnal_detail.id_perkiraan = 1 THEN jurnal_detail.nilai
-					WHEN jurnal_detail.id_perkiraan = 2 THEN -jurnal_detail.nilai
+					WHEN jurnal_detail.id_perkiraan = 1 THEN -jurnal_detail.nilai
+					WHEN jurnal_detail.id_perkiraan = 2 THEN jurnal_detail.nilai
 					ELSE 0
 				END
 			), 0) AS saldo_hutang
@@ -36,6 +37,7 @@ class Supplier_model extends CI_Model
 		// group by WAJIB karena ada SUM
 		$this->db->group_by([
 			'supplier.id_supplier',
+			'supplier.kode',
 			'supplier.nama_supplier',
 			'supplier.alamat_supplier'
 		]);
@@ -76,6 +78,7 @@ class Supplier_model extends CI_Model
 	public function insert()
 	{
 		$data = [
+			'kode' => $this->input->post('kode', true),
 			'nama_supplier' => $this->input->post('nama_supplier', true),
 			'alamat_supplier' => $this->input->post('alamat_supplier', true),
 			'id_akun' => $this->input->post('id_akun', true),
@@ -89,6 +92,7 @@ class Supplier_model extends CI_Model
 	public function update($id)
 	{
 		$data = [
+			'kode' => $this->input->post('kode', true),
 			'nama_supplier' => $this->input->post('nama_supplier', true),
 			'alamat_supplier' => $this->input->post('alamat_supplier', true),
 			'id_akun' => $this->input->post('id_akun', true),

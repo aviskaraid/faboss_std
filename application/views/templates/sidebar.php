@@ -161,6 +161,18 @@
 
   <hr class="sidebar-divider">
 
+  <!-- Jurnal -->
+  <div class="sidebar-heading">Jurnal</div>
+
+  <li class="nav-item">
+    <a class="nav-link" href="<?= base_url('journal'); ?>">
+      <i class="fas fa-fw fa-book-open"></i>
+      <span>Jurnal Umum</span>
+    </a>
+  </li>
+
+  <hr class="sidebar-divider">
+
   <!-- Proses -->
   <div class="sidebar-heading">Proses Periodikal</div>
 
@@ -219,7 +231,7 @@
   <li class="nav-item">
     <a class="nav-link pt-0" href="<?= base_url('utang'); ?>">
       <i class="fa-solid fa-file-invoice-dollar"></i>
-      <span>Utang</span>
+      <span>Hutang</span>
     </a>
   </li>
 
@@ -239,18 +251,6 @@
     <a class="nav-link pt-0" href="<?= base_url('asset/nonaktif'); ?>">
       <i class="fa-regular fa-file-zipper"></i>
       <span>Aset Nonaktif</span>
-    </a>
-  </li>
-
-  <hr class="sidebar-divider">
-
-  <!-- Jurnal -->
-  <div class="sidebar-heading">Jurnal</div>
-
-  <li class="nav-item">
-    <a class="nav-link" href="<?= base_url('journal'); ?>">
-      <i class="fas fa-fw fa-book-open"></i>
-      <span>Jurnal Umum</span>
     </a>
   </li>
 

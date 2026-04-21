@@ -33,6 +33,7 @@
 								<tr>
 									<th scope="col">#</th>
 									<th scope="col">ID Akun</th>
+									<th scope="col">Kode</th>
 									<th scope="col">Nama Supplier</th>
 									<th scope="col">Alamat</th>
 									<th scope="col">Hutang Belum Lunas</th>						      
@@ -48,6 +49,7 @@
 								<tr>
 									<th width="10px" scope="row"><?= $i++; ?></th>
 									<td width="10%"><?= $row['noakun']; ?></td>
+									<td width="10%"><?= $row['kode']; ?></td>
 									<td width="20%"><?= $row['nama_supplier']; ?></td>
 									<td ><?= $row['alamat_supplier']; ?></td>
 									<td width="20%" class="text-right"><?= number_format($row['saldo_hutang']); ?></td>
@@ -55,6 +57,7 @@
 										<td class="text-center" width="15%">
 											<a href="" class="badge badge-primary update-supplier" data-toggle="modal" data-target="#ubahSupplier"
 												data-id_supplier="<?= $row['id_supplier']; ?>"
+												data-kode="<?= $row['kode']; ?>"
 												data-nama_supplier="<?= $row['nama_supplier']; ?>"
 												data-alamat_supplier="<?= $row['alamat_supplier']; ?>"
 												data-id_akun="<?= $row['id_akun']; ?>"
@@ -126,6 +129,12 @@
 					    </div>
 					</div>
 					<div class="form-group row">
+						<label for="kode" class="col-sm-3 col-form-label">Kode</label>
+		    			<div class="col-sm-9">
+							<input type="text" class="form-control" id="kode" name="kode" placeholder="Kode Customer" required="">
+						</div>
+					</div>
+					<div class="form-group row">
 						<label for="nama_supplier" class="col-sm-3 col-form-label">Nama Supplier</label>
 		    			<div class="col-sm-9">
 							<input type="text" class="form-control" id="nama_supplier" name="nama_supplier" placeholder="Nama Supplier" required="">
@@ -179,6 +188,12 @@
 								<?php endforeach; ?>
 					    	</select>
 					    </div>
+					</div>
+					<div class="form-group row">
+						<label for="kode" class="col-sm-3 col-form-label">Kode</label>
+		    			<div class="col-sm-9">
+							<input type="text" class="form-control" id="kode_update" name="kode" placeholder="Kode Customer" required="">
+						</div>
 					</div>
 					<div class="form-group row">
 						<label for="nama_supplier" class="col-sm-3 col-form-label">Nama Supplier</label>
@@ -256,19 +271,21 @@
 	$(document).ready(function(){
 		$('.bootstrap-select').selectpicker();
 
-		$('.update-kas').on('click',function(){
+		$('.update-supplier').on('click',function(){
 			const id_supplier = $(this).data('id_supplier');
+			const kode = $(this).data('kode');
 			const nama_supplier = $(this).data('nama_supplier');
 			const alamat_supplier = $(this).data('alamat_supplier');
 			const id_akun = $(this).data('id_akun');
 
 			$("#id_supplier_update").val(id_supplier);
+			$("#kode_update").val(kode);
 			$("#nama_supplier_update").val(nama_supplier);
 			$("#alamat_supplier_update").val(alamat_supplier);
 			$("#id_akun_update option[value='" + id_akun + "']").prop("selected", true).trigger('change');
 		});
 
-		$('.delete-kas').on('click',function(){
+		$('.delete-supplier').on('click',function(){
 			const id_supplier = $(this).data('id_supplier');
 
 			$("#id_supplier_delete").val(id_supplier);

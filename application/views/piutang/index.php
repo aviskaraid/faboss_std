@@ -687,7 +687,7 @@ $(document).on('click', '.btn-hapus-pelunasan', function () {
 							<div class="form-group row">
 								<label for="nilai" class="col-sm-3 col-form-label">Nominal Piutang</label>
 								<div class="col-sm-9">
-									<input type="text" class="form-control" id="nilai" name="nilai" placeholder="Nominal Piutang" required="">									
+									<input type="text" class="form-control nominal" id="nilai" name="nilai" placeholder="Nominal Piutang" required="">									
 								</div>
 							</div>
 							
@@ -742,7 +742,7 @@ $(document).on('click', '.btn-hapus-pelunasan', function () {
   	<div class="modal-dialog modal-lg" role="document">
     	<div class="modal-content">
     		<div class="modal-header">
-      			<h5 class="modal-title" id="editTransaksiPendapatanLabel">Edit Transaksi Pendapatan</h5>
+      			<h5 class="modal-title" id="editPiutangLabel">Edit Transaksi Piutang</h5>
     		</div>
 
 			<form action="<?= base_url('piutang/update'); ?>" method="post" enctype="multipart/form-data">
@@ -802,7 +802,7 @@ $(document).on('click', '.btn-hapus-pelunasan', function () {
 							<div class="form-group row">
 								<label for="nilai_edit" class="col-sm-3 col-form-label">Nominal Piutang</label>
 								<div class="col-sm-9">
-									<input type="text" class="form-control" id="nilai_edit" name="nilai" placeholder="Nominal Piutang" required="">									
+									<input type="text" class="form-control nominal" id="nilai_edit" name="nilai" placeholder="Nominal Piutang" required="">									
 								</div>
 							</div>
 										      			
@@ -1111,7 +1111,7 @@ $(document).on('click', '.btn-delete', function (e) {
             // 2️⃣ KONFIRMASI HAPUS
             Swal.fire({
                 title: 'Yakin ingin menghapus?',
-                text: 'Data Transaksi Pendapatan yang dihapus tidak bisa dikembalikan!',
+                text: 'Data Transaksi Piutang yang dihapus tidak bisa dikembalikan!',
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#d33',
@@ -1121,7 +1121,7 @@ $(document).on('click', '.btn-delete', function (e) {
             }).then((result) => {
                 if (result.isConfirmed) {
                     // 3️⃣ REDIRECT DELETE
-                    window.location.href = APP.base_url + 'transaksipendapatan/delete/' + id;
+                    window.location.href = APP.base_url + 'piutang/delete/' + id;
                 }
             });
 

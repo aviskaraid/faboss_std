@@ -39,10 +39,10 @@ class Piutang_model extends CI_Model
 
 	public function getAkunCustomerById($id)
 	{
-		$this->db->select('b.noakun');
-		$this->db->from('customer a');
-		$this->db->join('akun b', 'a.id_akun = b.id_akun', 'left');
-		$this->db->where('a.id_customer', $id);
+		$this->db->select('p.id_piutang, p.id_customer, c.id_akun');
+		$this->db->from('piutang p');
+		$this->db->join('customer c', 'p.id_customer = c.id_customer', 'left');
+		$this->db->where('p.id_piutang', $id);
 		return $this->db->get()->row_array();
 	}
 
