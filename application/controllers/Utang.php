@@ -477,11 +477,11 @@ class Utang extends CI_Controller
 	// daftar pelunasan
 	public function detail_pelunasan()
     {
-        $id_hutang = $this->input->post('id_hutang');
+        $id_utang = $this->input->post('id_utang');
 
-        $data = $this->utang->get_terbayar($id_hutang);
+        $data = $this->utang->get_terbayar($id_utang);
 
-        echo json_encode($data);
+		echo json_encode($data);
     }
 
     public function hapus_pelunasan()
