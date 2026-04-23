@@ -89,10 +89,10 @@
 								<th scope="col">#</th>
 								<th scope="col">Tanggal</th>
 								<th scope="col">Invoice</th>
-								<th scope="col">Supplier</th>								
+								<th scope="col">Supplier</th>
+								<th scope="col">Jt. Tempo</th>								
 								<th scope="col">Keterangan</th>
-								<th scope="col">Nominal</th>
-								<th scope="col">Jt. Tempo</th>
+								<th scope="col">Nominal</th>								
 								<th scope="col">Dibayar</th>
 								<th scope="col">Status</th>
 								<?php if (is_user() || is_keuangan()) : ?>
@@ -111,9 +111,9 @@
 									<td><?= convertDbdateToDate($row['tgl_invoice']); ?></td>
 									<td><?= $row['no_ref']; ?></td>
 						      		<td><?= $row['nama_supplier']; ?></td>
-						      		<td><?= $row['deskripsi']; ?></td>
-						      		<td class="text-right"><?= number_format($row['nilai'], 0, ',', '.'); ?></td>
 									<td class="text-nowrap"><?= convertDbdateToDate($row['jt_tempo']); ?></td>
+						      		<td><?= $row['deskripsi']; ?></td>
+						      		<td class="text-right"><?= number_format($row['nilai'], 0, ',', '.'); ?></td>									
 						      		<td class="text-right"><?= number_format($row['dibayar'], 0, ',', '.'); ?></td>
 									<td>
 								      	<?php if($row['dibayar'] < $row['nilai']) {

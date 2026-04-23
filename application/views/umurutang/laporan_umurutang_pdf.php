@@ -13,7 +13,7 @@ class PDF extends PDF_MC_Table{
             $this->Cell(140,6,'',0,0,'L'); 
             $this->Cell(140,6,"Printed date : " . date('d-M-Y'),0,1,'R'); 
         } else {
-            $this->Cell(140,6,"Laporan Piutang",0,0,'L'); 
+            $this->Cell(140,6,"Laporan Umur Hutang",0,0,'L'); 
             $this->Cell(140,6,"Printed date : " . date('d-M-Y'),0,1,'R'); 
         }
 
@@ -88,23 +88,25 @@ class PDF extends PDF_MC_Table{
             $this->Ln(2);
             $this->SetFont('Arial','B',12);
             $this->Cell(0,6,$profile['name'],0,1,'C'); 
-            $this->Cell(0,6,'Daftar Piutang',0,1,'C'); 
+            $this->Cell(0,6,'Laporan Umur Hutang',0,1,'C'); 
             $this->Cell(0,6, tgl_indo($tglAwal).' s/d '.tgl_indo($tglAkhir),0,1,'C'); 
             $this->Ln(3);
         }
 
         // FIXED WIDTHS (TOTAL = 277 mm)
-        $widths = [20,40,40,20,72,25,25,35];
+        $widths = [18,35,50,20,25,25,26,26,26,26];
 
         $header = [
             'Tanggal',
             'No Invoice',
-            'Customer',
+            'Supplier',
             'Jt. Tempo',
-            'Keterangan',
             'Nominal',
             'Dibayar',
-            'Status'
+            'Belum JT',
+            '0-30',
+            '31-60',
+            '>60'
         ];
 
         // Header Table
@@ -117,38 +119,84 @@ class PDF extends PDF_MC_Table{
         if ($result) {
             $this->SetFont('Arial','',9);
             $this->SetWidths($widths);
-            $this->SetAligns(['C','L','L','C','L','R','R','R']);
+            $this->SetAligns(['C','L','L','C','R','R','R','R','R','R']);
             $this->SetLineHeight(5);
 
             $total_nilai = 0;
             $total_dibayar = 0;
+            $total_belumJT = 0;
+            $total_30 = 0;
+            $total_60 = 0;
+            $total_lebih60 = 0;
 
             foreach ($result as $row) {
+                date_default_timezone_set('Asia/Jakarta');
+                $today = new DateTime();
+
+                $jtTempo = !empty($row['jt_tempo']) ? new DateTime($row['jt_tempo']) : null;
+
+                $sisa = ($row['nilai'] ?? 0) - ($row['dibayar'] ?? 0);
+
+                $belumJT = 0;
+                $hari30 = 0;
+                $hari60 = 0;
+                $hariLebih60 = 0;
+
+                if ($jtTempo) {
+                    $interval = $today->diff($jtTempo); // IMPORTANT: today -> jtTempo
+                    $days = $interval->days;
+
+                    if ($interval->invert == 0) {
+                        // FUTURE (jt_tempo > today)
+                        $belumJT = $sisa;
+                    } else {
+                        // OVERDUE
+                        if ($days <= 30) {
+                            $hari30 = $sisa;
+                        } elseif ($days <= 60) {
+                            $hari60 = $sisa;
+                        } else {
+                            $hariLebih60 = $sisa;
+                        }
+                    }
+                } else {
+                    // no due date → treat as belum jatuh tempo
+                    $belumJT = $sisa;
+                }
+
                 $this->Row([
-                    date("d/n/Y", strtotime($row['tgl'])),
-                    $row['no_ref'],
-                    $row['nama_customer'],
-                    $row['jt_tempo'] ? date("d/n/Y", strtotime($row['jt_tempo'])) : '-',
-                    $this->SmartWrapText($row['deskripsi'], $widths[4] - 2),
-                    'Rp. '.number_format($row['nilai'],0,',','.'),
-                    'Rp. '.number_format($row['dibayar'],0,',','.'),
-                    ($row['dibayar'] < $row['nilai']) ? "Belum Lunas" : "Sudah Lunas",
+                    date("d/n/Y", strtotime($row['tgl_invoice'] ?? '')),
+                    $row['no_ref'] ?? '',
+                    $row['nama_supplier'] ?? '',
+                    !empty($row['jt_tempo']) ? date("d/n/Y", strtotime($row['jt_tempo'])) : '-',
+                    'Rp. '.number_format($row['nilai'] ?? 0,0,',','.'),
+                    'Rp. '.number_format($row['dibayar'] ?? 0,0,',','.'),
+                    'Rp. '.number_format($belumJT,0,',','.'),
+                    'Rp. '.number_format($hari30,0,',','.'),
+                    'Rp. '.number_format($hari60,0,',','.'),
+                    'Rp. '.number_format($hariLebih60,0,',','.'),
                 ]);
 
                 $total_nilai += $row['nilai'];
                 $total_dibayar += $row['dibayar'];
+                $total_belumJT += $belumJT;
+                $total_30 += $hari30;
+                $total_60 += $hari60;
+                $total_lebih60 += $hariLebih60;
             }
 
             // TOTAL ROW
             $this->SetFont('Arial','B',9);
 
-            $labelWidth = $widths[0] + $widths[1] + $widths[2] + $widths[3] + $widths[4];
+            $labelWidth = $widths[0] + $widths[1] + $widths[2] + $widths[3];
 
             $this->Cell($labelWidth,6,'Jumlah Total',1,0,'R');
-            $this->Cell($widths[5],6,'Rp. '.number_format($total_nilai,0,',','.'),1,0,'R');
-            $this->Cell($widths[6],6,'Rp. '.number_format($total_dibayar,0,',','.'),1,0,'R');
-            $this->Cell($widths[7],6,'',1,1,'R');
-
+            $this->Cell($widths[4],6,'Rp. '.number_format($total_nilai,0,',','.'),1,0,'R');
+            $this->Cell($widths[5],6,'Rp. '.number_format($total_dibayar,0,',','.'),1,0,'R');
+            $this->Cell($widths[6],6,'Rp. '.number_format($total_belumJT,0,',','.'),1,0,'R');
+            $this->Cell($widths[7],6,'Rp. '.number_format($total_30,0,',','.'),1,0,'R');
+            $this->Cell($widths[8],6,'Rp. '.number_format($total_60,0,',','.'),1,0,'R');
+            $this->Cell($widths[9],6,'Rp. '.number_format($total_lebih60,0,',','.'),1,1,'R');
         } else {
             $this->Cell(277,6,'Tidak ada data',1,1,'L');
         }
@@ -160,7 +208,7 @@ $pdf = new PDF();
 $pdf->AliasNbPages();
 $pdf->AddPage('L'); // Landscape
 
-$pdf->SetTitle('Laporan Piutang '.$profile['name'], true);
+$pdf->SetTitle('Laporan Umur Hutang '.$profile['name'], true);
 $pdf->Content($result, $tglAwal, $tglAkhir, $profile);
 
-$pdf->Output('laporan-piutang['.date('d-M-Y').'].pdf', 'I');
+$pdf->Output('laporan-umur-hutang['.date('d-M-Y').'].pdf', 'I');

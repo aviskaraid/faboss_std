@@ -1,110 +1,166 @@
 <?php 
 if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
+require_once(APPPATH.'libraries/PDF_MC_Table.php');
+
 class PDF extends PDF_MC_Table{
-    // Page header
+
+    /* ================= HEADER ================= */
     function Header(){
+        $this->SetFont('Arial','I',9);
+
         if ($this->PageNo() == 1){
-            $this->setFont('Arial','I',9);
-            $this->setFillColor(255,255,255);
-            $this->cell(90,6,'',0,0,'L',1); 
-            $this->cell(100,6,"Printed date : " . date('d-M-Y'),0,1,'R',1); 
-            $this->Line(10,$this->GetY(),200,$this->GetY());
-        }else{
-            $this->setFont('Arial','I',9);
-            $this->setFillColor(255,255,255);
-            $this->cell(90,6,"Laporan Neraca",0,0,'L',1); 
-            $this->cell(100,6,"Printed date : " . date('d-M-Y'),0,1,'R',1); 
+            $this->Cell(140,6,'',0,0,'L'); 
+            $this->Cell(140,6,"Printed date : " . date('d-M-Y'),0,1,'R'); 
+        } else {
+            $this->Cell(140,6,"Laporan Piutang",0,0,'L'); 
+            $this->Cell(140,6,"Printed date : " . date('d-M-Y'),0,1,'R'); 
         }
+
+        $this->Line(10,$this->GetY(),287,$this->GetY());
     }
 
-    
-    function Content($result, $tglAwal, $tglAkhir, $profile){
-        if ($this->PageNo() == 1){
-            // Kop Laporan
-            $this->Ln(1);
-            $this->setFont('Arial','B',12);
-            $this->setFillColor(255,255,255);
-            $this->cell(0,6,$profile['name'],0,1,'C',1); 
-            $this->cell(0,6,'Daftar Utang',0,1,'C',1); 
-            $this->cell(0,6, tgl_indo($tglAwal).' s/d '.tgl_indo($tglAkhir),0,1,'C',1); 
+    /* ================= FOOTER ================= */
+    function Footer(){
+        $this->SetY(-15);
+        $this->Line(10,$this->GetY(),287,$this->GetY());
+        $this->SetFont('Arial','I',9);
+        $this->Cell(0,10,'Copyright@'.date('Y'),0,0,'L');
+        $this->Cell(0,10,'Page '.$this->PageNo().'/{nb}',0,0,'R');
+    }
 
-            // Line break
-            $this->Ln(2);
-            $this->setFont('Arial','B',9);
-            $this->setFillColor(255,255,255);
-            $this->cell(20,6,'Tanggal',1,0,'C',1);
-            $this->cell(35,6,'No Transaksi',1,0,'C',1);
-            $this->cell(45,6,'Keterangan',1,0,'C',1);
-            $this->cell(30,6,'Nominal',1,0,'C',1);
-            $this->cell(30,6,'Dibayar',1,0,'C',1);
-            $this->cell(30,6,'Status',1,1,'C',1);
-        } else {
-            $this->Ln(2);
-            $this->setFont('Arial','B',9);
-            $this->setFillColor(255,255,255);
-            $this->cell(20,6,'Tanggal',1,0,'C',1);
-            $this->cell(35,6,'No Transaksi',1,0,'C',1);
-            $this->cell(45,6,'Keterangan',1,0,'C',1);
-            $this->cell(30,6,'Nominal',1,0,'C',1);
-            $this->cell(30,6,'Dibayar',1,0,'C',1);
-            $this->cell(30,6,'Status',1,1,'C',1);
+    /* ================= SMART WRAP ================= */
+    function SmartWrapText($text, $maxWidth){
+        $words = explode(' ', $text);
+        $lines = [];
+        $currentLine = '';
+
+        foreach ($words as $word) {
+            $testLine = ($currentLine === '') ? $word : $currentLine.' '.$word;
+
+            if ($this->GetStringWidth($testLine) < $maxWidth) {
+                $currentLine = $testLine;
+            } else {
+                if ($currentLine === '') {
+                    $lines[] = $this->BreakLongWord($word, $maxWidth);
+                } else {
+                    $lines[] = $currentLine;
+                    $currentLine = $word;
+                }
+            }
         }
 
-        // menampilkan datanya
-        if($result) {
-            $this->setFont('Arial','',9);
-            $this->SetWidths(Array(20,35,45,30,30,30));
-            $this->SetAligns(Array('C','L','L','R','R','R'));
-            $this->SetLineHeight(5); 
+        if ($currentLine !== '') {
+            $lines[] = $currentLine;
+        }
+
+        return implode("\n", $lines);
+    }
+
+    function BreakLongWord($word, $maxWidth){
+        $result = '';
+        $tmp = '';
+
+        for ($i = 0; $i < strlen($word); $i++) {
+            $char = $word[$i];
+            $test = $tmp . $char;
+
+            if ($this->GetStringWidth($test) < $maxWidth) {
+                $tmp = $test;
+            } else {
+                $result .= $tmp . "\n";
+                $tmp = $char;
+            }
+        }
+
+        if ($tmp !== '') {
+            $result .= $tmp;
+        }
+
+        return $result;
+    }
+
+    /* ================= CONTENT ================= */
+    function Content($result, $tglAwal, $tglAkhir, $profile){
+
+        // Title Section
+        if ($this->PageNo() == 1){
+            $this->Ln(2);
+            $this->SetFont('Arial','B',12);
+            $this->Cell(0,6,$profile['name'],0,1,'C'); 
+            $this->Cell(0,6,'Daftar Hutang',0,1,'C'); 
+            $this->Cell(0,6, tgl_indo($tglAwal).' s/d '.tgl_indo($tglAkhir),0,1,'C'); 
+            $this->Ln(3);
+        }
+
+        // FIXED WIDTHS (TOTAL = 277 mm)
+        $widths = [20,40,40,20,72,25,25,35];
+
+        $header = [
+            'Tanggal',
+            'No Invoice',
+            'Supplier',
+            'Jt. Tempo',
+            'Keterangan',
+            'Nominal',
+            'Dibayar',
+            'Status'
+        ];
+
+        // Header Table
+        $this->SetFont('Arial','B',9);
+        foreach ($header as $i => $col) {
+            $this->Cell($widths[$i],6,$col,1,0,'C');
+        }
+        $this->Ln();
+
+        if ($result) {
+            $this->SetFont('Arial','',9);
+            $this->SetWidths($widths);
+            $this->SetAligns(['C','L','L','C','L','R','R','R']);
+            $this->SetLineHeight(5);
+
             $total_nilai = 0;
             $total_dibayar = 0;
-            foreach ($result as $row) {       
-                $this->Row(Array(
+
+            foreach ($result as $row) {
+                $this->Row([
                     date("d/n/Y", strtotime($row['tgl'])),
-                    $row['no_trans'],
-                    $row['keterangan'],
+                    $row['no_ref'],
+                    $row['nama_supplier'],
+                    $row['jt_tempo'] ? date("d/n/Y", strtotime($row['jt_tempo'])) : '-',
+                    $this->SmartWrapText($row['deskripsi'], $widths[4] - 2),
                     'Rp. '.number_format($row['nilai'],0,',','.'),
                     'Rp. '.number_format($row['dibayar'],0,',','.'),
                     ($row['dibayar'] < $row['nilai']) ? "Belum Lunas" : "Sudah Lunas",
-                ));
+                ]);
 
                 $total_nilai += $row['nilai'];
                 $total_dibayar += $row['dibayar'];
             }
 
-            $this->setFont('Arial','B',9);
-            $this->setFillColor(255,255,255);   
-            $this->cell(100,6,'Jumlah Total',1,0,'R',1);
-            $this->cell(30,6,'Rp. '.number_format($total_nilai,0,',','.'),1,0,'R',1);
-            $this->cell(30,6,'Rp. '.number_format($total_dibayar,0,',','.'),1,0,'R',1);
-            $this->cell(30,6,'',1,1,'R',1);
-        } else {                
-            $this->setFont('Arial','',9);
-            $this->setFillColor(255,255,255);   
-            $this->cell(190,6,'Tidak ada data',1,1,'L',1);
+            // TOTAL ROW
+            $this->SetFont('Arial','B',9);
+
+            $labelWidth = $widths[0] + $widths[1] + $widths[2] + $widths[3] + $widths[4];
+
+            $this->Cell($labelWidth,6,'Jumlah Total',1,0,'R');
+            $this->Cell($widths[5],6,'Rp. '.number_format($total_nilai,0,',','.'),1,0,'R');
+            $this->Cell($widths[6],6,'Rp. '.number_format($total_dibayar,0,',','.'),1,0,'R');
+            $this->Cell($widths[7],6,'',1,1,'R');
+
+        } else {
+            $this->Cell(277,6,'Tidak ada data',1,1,'L');
         }
-
-    }
-
-    // Page footer
-    function Footer(){
-        // Position at 1.5 cm from bottom
-        $this->SetY(-15);
-        //buat garis horizontal
-        $this->Line(10,$this->GetY(),200,$this->GetY());
-        //Arial italic 9
-        $this->SetFont('Arial','I',9);
-        $this->Cell(0,10,'Copyright@'.date('Y'),0,0,'L');
-        //nomor halaman
-        $this->Cell(0,10,'Page '.$this->PageNo().'/{nb}',0,0,'R');
     }
 }
 
-// Instanciation of inherited class
+/* ================= EXECUTION ================= */
 $pdf = new PDF();
 $pdf->AliasNbPages();
-$pdf->AddPage();
-$pdf->setTitle('Laporan Neraca '.$profile['name'],true);
+$pdf->AddPage('L'); // Landscape
+
+$pdf->SetTitle('Laporan Hutang '.$profile['name'], true);
 $pdf->Content($result, $tglAwal, $tglAkhir, $profile);
-$pdf->Output('laporan-neraca['.date('d-M-Y').'].pdf', 'I');
+
+$pdf->Output('laporan-hutang['.date('d-M-Y').'].pdf', 'I');

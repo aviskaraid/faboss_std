@@ -41,28 +41,30 @@ $style_row = [
   ]
 ];
 
-$sheet->setCellValue('A1', $profile['name']); // Set kolom A1 dengan tulisan "DATA SISWA"
-$sheet->mergeCells('A1:F1'); // Set Merge Cell pada kolom A1 sampai E1
+$sheet->setCellValue('A1', $profile['name']); 
+$sheet->mergeCells('A1:H1'); // Set Merge Cell pada kolom A1 sampai H1
 $sheet->getStyle('A1')->getFont()->setBold(true); // Set bold kolom A1
-$sheet->getStyle('A1:F1')->applyFromArray($style_col);
+$sheet->getStyle('A1:H1')->applyFromArray($style_col);
 
-$sheet->setCellValue('A2', 'Laporan Piutang'); // Set kolom A1 dengan tulisan "DATA SISWA"
-$sheet->mergeCells('A2:F2'); // Set Merge Cell pada kolom A1 sampai E1
+$sheet->setCellValue('A2', 'Laporan Piutang');
+$sheet->mergeCells('A2:H2'); // Set Merge Cell pada kolom A1 sampai H1
 $sheet->getStyle('A2')->getFont()->setBold(true); // Set bold kolom A1
-$sheet->getStyle('A2:F2')->applyFromArray($style_col);
+$sheet->getStyle('A2:H2')->applyFromArray($style_col);
 
-$sheet->setCellValue('A3', tgl_indo($tglAwal).' s/d '.tgl_indo($tglAkhir)); // Set kolom A1 dengan tulisan "DATA SISWA"
-$sheet->mergeCells('A3:F3'); // Set Merge Cell pada kolom A1 sampai E1
+$sheet->setCellValue('A3', tgl_indo($tglAwal).' s/d '.tgl_indo($tglAkhir));
+$sheet->mergeCells('A3:H3'); // Set Merge Cell pada kolom A1 sampai H1
 $sheet->getStyle('A3')->getFont()->setBold(true); // Set bold kolom A1
-$sheet->getStyle('A3:F3')->applyFromArray($style_col);
+$sheet->getStyle('A3:H3')->applyFromArray($style_col);
 
 // tabel data
 $sheet->setCellValue('A5', "Tanggal"); 
-$sheet->setCellValue('B5', "No Transaksi"); 
-$sheet->setCellValue('C5', "Keterangan"); 
-$sheet->setCellValue('D5', "Nominal");
-$sheet->setCellValue('E5', "Dibayar"); 
-$sheet->setCellValue('F5', "Status"); 
+$sheet->setCellValue('B5', "No Invoice"); 
+$sheet->setCellValue('C5', "Customer");
+$sheet->setCellValue('D5', "Keterangan"); 
+$sheet->setCellValue('E5', "Jt. Tempo");
+$sheet->setCellValue('F5', "Nilai");
+$sheet->setCellValue('G5', "Dibayar"); 
+$sheet->setCellValue('H5', "Status"); 
 
 $sheet->getStyle('A5')->applyFromArray($style_col_table);
 $sheet->getStyle('B5')->applyFromArray($style_col_table);
@@ -70,6 +72,8 @@ $sheet->getStyle('C5')->applyFromArray($style_col_table);
 $sheet->getStyle('D5')->applyFromArray($style_col_table);
 $sheet->getStyle('E5')->applyFromArray($style_col_table);
 $sheet->getStyle('F5')->applyFromArray($style_col_table);
+$sheet->getStyle('G5')->applyFromArray($style_col_table);
+$sheet->getStyle('H5')->applyFromArray($style_col_table);
 
 
 date_default_timezone_set('Asia/Jakarta');
@@ -87,12 +91,14 @@ if(isset($result))
     $total_dibayar = 0;
     foreach ($result as $row)
     {
-          $sheet->setCellValue('A'.$numrow, date("d/n/Y", strtotime($row['tgl'])));
-          $sheet->setCellValue('B'.$numrow, $row['no_trans']);
-          $sheet->setCellValue('C'.$numrow, $row['keterangan']);
-          $sheet->setCellValue('D'.$numrow, $row['nilai']);
-          $sheet->setCellValue('E'.$numrow, $row['dibayar']);
-          $sheet->setCellValue('F'.$numrow, ($row['dibayar'] < $row['nilai']) ? "Belum Lunas" : "Sudah Lunas");
+          $sheet->setCellValue('A'.$numrow, date("d/n/Y", strtotime($row['tgl_invoice'])));
+          $sheet->setCellValue('B'.$numrow, $row['no_ref']);
+          $sheet->setCellValue('C'.$numrow, $row['nama_customer']);
+          $sheet->setCellValue('D'.$numrow, $row['deskripsi']);
+          $sheet->setCellValue('E'.$numrow, date("d/n/Y", strtotime($row['jt_tempo'])));
+          $sheet->setCellValue('F'.$numrow, $row['nilai']);
+          $sheet->setCellValue('G'.$numrow, $row['dibayar']);
+          $sheet->setCellValue('H'.$numrow, ($row['dibayar'] < $row['nilai']) ? "Belum Lunas" : "Sudah Lunas");
 
           $sheet->getStyle('A'.$numrow)->applyFromArray($style_row);
           $sheet->getStyle('B'.$numrow)->applyFromArray($style_row);
@@ -100,6 +106,8 @@ if(isset($result))
           $sheet->getStyle('D'.$numrow)->applyFromArray($style_row);
           $sheet->getStyle('E'.$numrow)->applyFromArray($style_row);
           $sheet->getStyle('F'.$numrow)->applyFromArray($style_row);
+          $sheet->getStyle('G'.$numrow)->applyFromArray($style_row);
+          $sheet->getStyle('H'.$numrow)->applyFromArray($style_row);
 
           $total_nilai += $row['nilai'];
           $total_dibayar += $row['dibayar'];
@@ -110,20 +118,20 @@ if(isset($result))
 
     // menampoilkan total
 
-    $sheet->setCellValue('A'.$numrow, 'Jumlah Total' ); // Set kolom A1 dengan tulisan "DATA SISWA"
-    $sheet->mergeCells('A'.$numrow.':C'.$numrow); // Set Merge Cell pada kolom A1 sampai E1
-    $sheet->getStyle('A'.$numrow.':C'.$numrow)->getFont()->setBold(TRUE); // Set bold kolom A1
-    $sheet->getStyle('A'.$numrow.':C'.$numrow)->getFont()->setSize(12); // Set font size 15 untuk kolom A1
+    $sheet->setCellValue('A'.$numrow, 'Jumlah Total' ); 
+    $sheet->mergeCells('A'.$numrow.':E'.$numrow);
+    $sheet->getStyle('A'.$numrow.':E'.$numrow)->getFont()->setBold(TRUE);
+    $sheet->getStyle('A'.$numrow.':E'.$numrow)->getFont()->setSize(12);
 
-    $sheet->setCellValue('D'.$numrow, $total_nilai);
-    $sheet->setCellValue('E'.$numrow, $total_dibayar);
-    $sheet->setCellValue('F'.$numrow, '');
+    $sheet->setCellValue('F'.$numrow, $total_nilai);
+    $sheet->setCellValue('G'.$numrow, $total_dibayar);
+    $sheet->setCellValue('H'.$numrow, '');
 
 
-    $sheet->getStyle('A'.$numrow.':C'.$numrow)->applyFromArray($style_row);
-    $sheet->getStyle('D'.$numrow)->applyFromArray($style_row);
-    $sheet->getStyle('E'.$numrow)->applyFromArray($style_row);
+    $sheet->getStyle('A'.$numrow.':E'.$numrow)->applyFromArray($style_row);
     $sheet->getStyle('F'.$numrow)->applyFromArray($style_row);
+    $sheet->getStyle('G'.$numrow)->applyFromArray($style_row);
+    $sheet->getStyle('H'.$numrow)->applyFromArray($style_row);
 
 } 
 
@@ -132,10 +140,12 @@ if(isset($result))
 // Set width kolom
 $sheet->getColumnDimension('A')->setWidth(20); // Set width kolom A
 $sheet->getColumnDimension('B')->setWidth(25); // Set width kolom B
-$sheet->getColumnDimension('C')->setWidth(45); // Set width kolom C
-$sheet->getColumnDimension('D')->setWidth(30); // Set width kolom D
+$sheet->getColumnDimension('C')->setWidth(30); // Set width kolom C
+$sheet->getColumnDimension('D')->setWidth(50); // Set width kolom D
 $sheet->getColumnDimension('E')->setWidth(30); // Set width kolom D
 $sheet->getColumnDimension('F')->setWidth(30); // Set width kolom D
+$sheet->getColumnDimension('G')->setWidth(30); // Set width kolom D
+$sheet->getColumnDimension('H')->setWidth(30); // Set width kolom
 
 // Set height semua kolom menjadi auto (mengikuti height isi dari kolommnya, jadi otomatis)
 $sheet->getDefaultRowDimension()->setRowHeight(-1);
