@@ -93,25 +93,25 @@ class Journal extends CI_Controller
             $row[] = number_format($item['nominal'],0,",",".");
 
             $row[] = ' 		
-        			<a href="'.base_url('journal/detail/').$item['id_jurnal'].'" class="badge badge-success">
-                        <span class="icon text-white-50">
-                            <i class="fas fa-fw fa-eye"></i>
-                        </span>
-                        <span class="text">Detail</span>
-                    </a>
-        			<a href="'.base_url('journal/edit/').$item['id_jurnal'].'" class="badge badge-primary">
-                        <span class="icon text-white-50">
-                            <i class="fas fa-fw fa-edit"></i>
-                        </span>
-                        <span class="text">Edit</span>
-                    </a>                            
-					<a href="#" 
-					   class="badge badge-danger btn-delete" data-id="'.$item['id_jurnal'].'" data-tgl="'.$item['tgl'].'" >
-					   <span class="icon text-white-50">
-					    <i class="fas fa-fw fa-trash"></i>
-					    </span> 
-					    <span class="text">Delete</span>
-					</a>';
+				<a href="'.base_url('journal/detail/').$item['id_jurnal'].'" class="badge badge-info">
+					<span class="icon text-white-50">
+						<i class="fas fa-fw fa-eye"></i>
+					</span>
+					<span class="text">Detail</span>
+				</a>
+				<a href="'.base_url('journal/edit/').$item['id_jurnal'].'" class="badge badge-primary btn-edit" data-id="'.$item['id_jurnal'].'" data-tgl="'.$item['tgl'].'" data-posted="'.$item['posted'].'"> 
+					<span class="icon text-white-50">
+						<i class="fas fa-fw fa-edit"></i>
+					</span>
+					<span class="text">Edit</span>
+				</a>                            
+				<a href="#" 
+					class="badge badge-danger btn-delete" data-id="'.$item['id_jurnal'].'" data-tgl="'.$item['tgl'].'" data-posted="'.$item['posted'].'">
+					<span class="icon text-white-50">
+					<i class="fas fa-fw fa-trash"></i>
+					</span> 
+					<span class="text">Delete</span>
+				</a>';
             $data[] = $row;
         }
  

@@ -142,7 +142,6 @@
 <script>
 
 var table;
-
 $(document).ready(function () {
 
     table = $('#table-serverside').DataTable({
@@ -164,17 +163,52 @@ $(document).ready(function () {
             }
         ]
     });
-
 });
 
 $('#btnFilter').on('click', function () {
     table.ajax.reload(null, false);
 });
 
-
-
 </script>
 
+<script>
+$(document).on('click', '.btn-edit', function (e) {
+    e.preventDefault();
+	let id = $(this).data('id');
+	let tgl = $(this).data('tgl');
+	let posted = $(this).data('posted');
+
+	if (posted == 1) {
+		Swal.fire('Error', 'Transaksi sudah diposting dan tidak bisa diedit', 'error');
+		return;
+	} else {
+		if (!tgl) {
+			Swal.fire('Error', 'Tanggal transaksi tidak ditemukan', 'error');
+			return;
+		}
+
+		// 1️⃣ CEK PERIODE DULU
+		$.ajax({
+			url: APP.base_url + 'periode/cek_periode',
+			type: 'POST',
+			dataType: 'json',
+			data: { tgl: tgl },
+			success: function (res) {
+				if (res.closed) {
+					Swal.fire({
+						icon: 'error',
+						title: 'Periode Ditutup',
+						text: 'Transaksi ini berada di periode yang sudah ditutup dan tidak bisa diedit'
+					});
+					return;
+				}
+				window.location.href = "<?= site_url('journal/edit/'); ?>" + id;					
+			}
+		});
+	}
+});
+	
+</script>
 
 
 <!-- SweetAlert2 -->
@@ -184,56 +218,57 @@ $(document).on('click', '.btn-delete', function (e) {
     e.preventDefault();
     let id = $(this).data('id');
     let tgl = $(this).data('tgl');
+	let posted = $(this).data('posted');
+
+	if (posted == 1) {
+		Swal.fire('Error', 'Transaksi sudah diposting dan tidak bisa dihapus', 'error');
+		return;
+	} else {
 
 		if (!tgl) {
-        Swal.fire('Error', 'Tanggal transaksi tidak ditemukan', 'error');
-        return;
-    }
+			Swal.fire('Error', 'Tanggal transaksi tidak ditemukan', 'error');
+			return;
+		}
 
-     // 1️⃣ CEK PERIODE DULU
-    $.ajax({
-        url: APP.base_url + 'periode/cek_periode',
-        type: 'POST',
-        dataType: 'json',
-        data: { tgl: tgl },
-        success: function (res) {
+    // 1️⃣ CEK PERIODE DULU
+		$.ajax({
+			url: APP.base_url + 'periode/cek_periode',
+			type: 'POST',
+			dataType: 'json',
+			data: { tgl: tgl },
+			success: function (res) {
 
-            if (res.closed) {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Periode Ditutup',
-                    text: 'Transaksi ini berada di periode yang sudah ditutup dan tidak bisa dihapus'
-                });
-                return;
-            }
-            
-				    Swal.fire({
-				        title: 'Yakin ingin menghapus?',
-				        text: 'Data jurnal yang dihapus tidak bisa dikembalikan!',
-				        icon: 'warning',
-				        showCancelButton: true,
-				        confirmButtonColor: '#d33',
-				        cancelButtonColor: '#3085d6',
-				        confirmButtonText: 'Ya, hapus!',
-				        cancelButtonText: 'Batal'
-				    }).then((result) => {
-				        if (result.isConfirmed) {
-				            window.location.href = "<?= site_url('journal/delete/'); ?>" + id;
-				        }
-				    });
-
-        }
-    });
+				if (res.closed) {
+					Swal.fire({
+						icon: 'error',
+						title: 'Periode Ditutup',
+						text: 'Transaksi ini berada di periode yang sudah ditutup dan tidak bisa dihapus'
+					});
+					return;
+				}
+				
+					Swal.fire({
+						title: 'Yakin ingin menghapus?',
+						text: 'Data jurnal yang dihapus tidak bisa dikembalikan!',
+						icon: 'warning',
+						showCancelButton: true,
+						confirmButtonColor: '#d33',
+						cancelButtonColor: '#3085d6',
+						confirmButtonText: 'Ya, hapus!',
+						cancelButtonText: 'Batal'
+					}).then((result) => {
+						if (result.isConfirmed) {
+							window.location.href = "<?= site_url('journal/delete/'); ?>" + id;
+					}
+				});
+			}
+		});
+	}	
 });
 </script>
 
 
-
-
-
-
 <script type="text/javascript">
-
 $(document).ready(function() {
 
 	$('.detailJournal').on('click',function(){

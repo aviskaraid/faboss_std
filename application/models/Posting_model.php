@@ -16,8 +16,8 @@ class Posting_model extends CI_Model
 
     public function validasiPosting($bln, $tahun)
     {
-        $id_periode = $this->db->get_where('periode', ['tahun' => $tahun])->row_array()['id_periode'];
-              
+        $id_periode = $this->db->get_where('periode', ['tahun' => $tahun])->row_array()['id_periode'];   
+        
         $response = [
             'status' => true,
             'messages' => [],
@@ -36,10 +36,21 @@ class Posting_model extends CI_Model
         }
 
         // 2. cek bulan sebelumnya belum posting
-        $this->db->where('periode_id', $id_periode);
-        $this->db->where('bln <', $bln);
-        $this->db->where('posted', 0);
-        $belumPosting = $this->db->get('periode_tutup')->num_rows();
+        if ($bln == 1) {
+            $bln_lalu = 12;
+            $tahun_lalu = $tahun - 1;
+            $id_periode = $this->db->get_where('periode', ['tahun' => $tahun_lalu])->row_array()['id_periode'];
+            $this->db->where('periode_id', $id_periode);
+            $this->db->where('bln <', $bln_lalu);
+            $this->db->where('posted', 0);
+            $belumPosting = $this->db->get('periode_tutup')->num_rows();
+        } else {
+            $this->db->where('periode_id', $id_periode);
+            $this->db->where('bln <', $bln);
+            $this->db->where('posted', 0);
+            $belumPosting = $this->db->get('periode_tutup')->num_rows();
+        }
+        
 
         if ($belumPosting > 0) {
             $response['status'] = false;

@@ -46,15 +46,12 @@ class Journal_model extends CI_Model
 				$tipe_kas_array[] = 0;
 			}
 		}
-		
-		
+				
 		if(in_array(1, $tipe_kas_array)){
 		    $tipe_kas = 1;
 		} else {
 		    $tipe_kas = 0;
 		}
-
-
 
 	   $result = array();
 	   foreach($data as $row){
@@ -169,13 +166,11 @@ class Journal_model extends CI_Model
 			}
 		}
 		
-		
 		if(in_array(1, $tipe_kas_array)){
 		    $tipe_kas = 1;
 		} else {
 		    $tipe_kas = 0;
 		}
-
 
 	   $result = array();
 	   foreach($data as $row){
@@ -204,31 +199,8 @@ class Journal_model extends CI_Model
 		$this->db->from('jurnal');
 		$this->db->join('jurnal_detail', 'jurnal.id_jurnal = jurnal_detail.id_jurnal', 'left');
 		$this->db->where('jurnal_detail.id_perkiraan', 1);
-		//$this->db->where($where_id);
-		// $this->db->group_by('jurnal_detail.id_jurnal');
 
         $i = 0;
-
-		/*
-        foreach ($this->column_search as $item) // loop column 
-        {
-            if ($_POST['search']['value']) // if datatable send POST for search
-            {
-
-                if ($i === 0) // first loop
-                {
-                    $this->db->group_start(); // open bracket. query Where with OR clause better with bracket. because maybe can combine with other WHERE with AND.
-                    $this->db->like($item, $_POST['search']['value']);
-                } else {
-                    $this->db->or_like($item, $_POST['search']['value']);
-                }
-
-                if (count($this->column_search) - 1 == $i) //last loop
-                    $this->db->group_end(); //close bracket
-            }
-            $i++;
-        }
-		*/
 
         if (isset($_POST['order'])) // here order processing
         {
@@ -243,11 +215,6 @@ class Journal_model extends CI_Model
     {		
         $this->_get_datatables_query();
 		
-		/*
-        if ($_POST['length'] != -1)
-            $this->db->limit($_POST['length'], $_POST['start']);
-		*/
-
         $query = $this->db->get();
         return $query->result_array();
     }

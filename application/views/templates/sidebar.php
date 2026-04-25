@@ -209,6 +209,13 @@
     </a>
   </li>
 
+  <li class="nav-item">
+    <a class="nav-link pt-0" href="<?= base_url('laporankas'); ?>">
+      <i class="fa-regular fa-money-bill-1"></i>
+      <span>Laporan Kas / Bank</span>
+    </a>
+  </li>
+
   <hr class="sidebar-divider">
 
   <!-- Piutang & Utang -->
@@ -222,9 +229,23 @@
   </li>
 
   <li class="nav-item">
+    <a class="nav-link pt-0" href="<?= base_url('umurpiutang'); ?>">
+      <i class="fa-solid fa-file-circle-plus"></i>
+      <span>Umur Piutang</span>
+    </a>
+  </li>
+
+  <li class="nav-item">
     <a class="nav-link pt-0" href="<?= base_url('utang'); ?>">
       <i class="fa-solid fa-file-invoice-dollar"></i>
       <span>Hutang</span>
+    </a>
+  </li>
+
+  <li class="nav-item">
+    <a class="nav-link pt-0" href="<?= base_url('umurutang'); ?>">
+      <i class="fa-solid fa-file-circle-minus"></i>
+      <span>Umur Hutang</span>
     </a>
   </li>
 
@@ -285,27 +306,6 @@
         </a>
       </div>
     </div>
-  </li>
-
-  <li class="nav-item">
-    <a class="nav-link pt-0" href="<?= base_url('laporankas'); ?>">
-      <i class="fa-regular fa-money-bill-1"></i>
-      <span>Kas / Bank</span>
-    </a>
-  </li>
-
-  <li class="nav-item">
-    <a class="nav-link pt-0" href="<?= base_url('umurpiutang'); ?>">
-      <i class="fa-solid fa-file-circle-plus"></i>
-      <span>Umur Piutang</span>
-    </a>
-  </li>
-
-  <li class="nav-item">
-    <a class="nav-link pt-0" href="<?= base_url('umurutang'); ?>">
-      <i class="fa-solid fa-file-circle-minus"></i>
-      <span>Umur Hutang</span>
-    </a>
   </li>
 
   <hr class="sidebar-divider">

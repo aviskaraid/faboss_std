@@ -123,7 +123,6 @@
 											<a href="javascript:void(0)" 
 												class="badge badge-success editTransaksiBiaya"
 												data-toggle="modal" 
-												data-target="#editTransaksiBiaya"
 												data-id_trans_biaya="<?= $row['id_trans_biaya'] ?>"
 												data-tgl="<?= convertDbdateToDate($row['tgl']) ?>"
 												data-keterangan="<?= $row['keterangan'] ?>"
@@ -131,12 +130,16 @@
 												data-kas_id="<?= $row['kas_id'] ?>"
 												data-biaya_id="<?= $row['biaya_id'] ?>"
 												data-bukti="<?= $row['bukti'] ?>"
-												data-bukti_url="<?= base_url('assets/file/bukti/'.$row['bukti']) ?>">
+												data-bukti_url="<?= base_url('assets/file/bukti/'.$row['bukti']) ?>"
+												data-posted="<?= $row['posted']; ?>">
 												<i class="fas fa-fw fa-edit"></i> Edit
 											</a>
 
 											<!-- DELETE -->
-											<a href="#" class="badge badge-danger btn-delete" data-id="<?= $row['id_trans_biaya']; ?>" data-tgl="<?= $row['tgl']; ?>">
+											<a href="#" class="badge badge-danger btn-delete" 
+												data-id="<?= $row['id_trans_biaya']; ?>" 
+												data-tgl="<?= $row['tgl']; ?>"
+												data-posted="<?= $row['posted']; ?>">
 												<span class="icon text-white-50">
 													<i class="fas fa-fw fa-trash"></i>
 												</span> 
@@ -482,51 +485,64 @@ $(document).on('click', '.btn-delete', function (e) {
 
     let id  = $(this).data('id');
     let tgl = $(this).data('tgl');
+	let posted = $(this).data('posted');
 
-    if (!tgl) {
-        Swal.fire('Error', 'Tanggal transaksi tidak ditemukan', 'error');
-        return;
-    }
+	if (posted) {
+		Swal.fire({
+			icon: 'error',
+			title: 'Transaksi Sudah Diposting',
+			text: 'Transaksi ini sudah diposting dan tidak bisa dihapus'
+		});
+		return;
+	} else {
 
-    // 1️⃣ CEK PERIODE DULU
-    $.ajax({
-        url: APP.base_url + 'periode/cek_periode',
-        type: 'POST',
-        dataType: 'json',
-        data: { tgl: tgl },
-        success: function (res) {
+	
 
-            if (res.closed) {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Periode Ditutup',
-                    text: 'Transaksi ini berada di periode yang sudah ditutup dan tidak bisa dihapus'
-                });
-                return;
-            }
+		if (!tgl) {
+			Swal.fire('Error', 'Tanggal transaksi tidak ditemukan', 'error');
+			return;
+		}
 
-            // 2️⃣ KONFIRMASI HAPUS
-            Swal.fire({
-                title: 'Yakin ingin menghapus?',
-                text: 'Data Transaksi Biaya yang dihapus tidak bisa dikembalikan!',
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#d33',
-                cancelButtonColor: '#3085d6',
-                confirmButtonText: 'Ya, hapus!',
-                cancelButtonText: 'Batal'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    // 3️⃣ REDIRECT DELETE
-                    window.location.href = APP.base_url + 'transaksibiaya/delete/' + id;
-                }
-            });
+		// 1️⃣ CEK PERIODE DULU
+		$.ajax({
+			url: APP.base_url + 'periode/cek_periode',
+			type: 'POST',
+			dataType: 'json',
+			data: { tgl: tgl },
+			success: function (res) {
 
-        },
-        error: function () {
-            Swal.fire('Error', 'Gagal cek periode', 'error');
-        }
-    });
+				if (res.closed) {
+					Swal.fire({
+						icon: 'error',
+						title: 'Periode Ditutup',
+						text: 'Transaksi ini berada di periode yang sudah ditutup dan tidak bisa dihapus'
+					});
+					return;
+				}
+
+				// 2️⃣ KONFIRMASI HAPUS
+				Swal.fire({
+					title: 'Yakin ingin menghapus?',
+					text: 'Data Transaksi Biaya yang dihapus tidak bisa dikembalikan!',
+					icon: 'warning',
+					showCancelButton: true,
+					confirmButtonColor: '#d33',
+					cancelButtonColor: '#3085d6',
+					confirmButtonText: 'Ya, hapus!',
+					cancelButtonText: 'Batal'
+				}).then((result) => {
+					if (result.isConfirmed) {
+						// 3️⃣ REDIRECT DELETE
+						window.location.href = APP.base_url + 'transaksibiaya/delete/' + id;
+					}
+				});
+
+			},
+			error: function () {
+				Swal.fire('Error', 'Gagal cek periode', 'error');
+			}
+		});
+	}	
 });
 </script>
 
@@ -644,25 +660,52 @@ $(document).on('click', '.editTransaksiBiaya', function (e) {
     const biaya_id      = $(this).data('biaya_id');
     const bukti         = $(this).data('bukti');
     const bukti_url     = $(this).data('bukti_url');
+	const posted        = $(this).data('posted');
 
-    $("#id_trans_biaya_update").val(id_trans_biaya);
-    $("#tgl_update").val(tgl);
-    $("#keterangan_update").val(keterangan);
-    $("#nilai_update").val(formatRupiah(nilai.toString()));
-    $("#id_kas_update").val(kas_id).trigger('change');
-    $("#id_biaya_update").val(biaya_id).trigger('change');
+	if (posted == 1) {
+		Swal.fire('Error', 'Transaksi sudah diposting dan tidak bisa diedit', 'error');
+		return;
+	} else {	
+		// cek tutup periode
+		$.ajax({
+			url: APP.base_url + 'periode/cek_periode',
+			type: 'POST',
+			dataType: 'json',
+			data: { tgl: tgl },
+			success: function (res) {
+				if (res.closed) {
+					Swal.fire({
+						icon: 'error',
+						title: 'Periode Ditutup',
+						text: 'Transaksi ini berada di periode yang sudah ditutup dan tidak bisa diedit'
+					});
+					return;
+				}
+			},
+			error: function () {
+				Swal.fire('Error', 'Gagal cek periode', 'error');
+			}
+		});
+		$("#id_trans_biaya_update").val(id_trans_biaya);
+		$("#tgl_update").val(tgl);
+		$("#keterangan_update").val(keterangan);
+		$("#nilai_update").val(formatRupiah(nilai.toString()));
+		$("#id_kas_update").val(kas_id).trigger('change');
+		$("#id_biaya_update").val(biaya_id).trigger('change');
 
-    $("#old_bukti").val(bukti);
+		$("#old_bukti").val(bukti);
 
-    if (bukti) {
-        $("#file-exists-area").show();
-        $("#file-upload-area").hide();
-        $("#btn-preview-file").data("url", bukti_url);
-        $("#btn-delete-file").data("file", bukti);
-    } else {
-        $("#file-exists-area").hide();
-        $("#file-upload-area").show();
-    }
+		if (bukti) {
+			$("#file-exists-area").show();
+			$("#file-upload-area").hide();
+			$("#btn-preview-file").data("url", bukti_url);
+			$("#btn-delete-file").data("file", bukti);
+		} else {
+			$("#file-exists-area").hide();
+			$("#file-upload-area").show();
+		}
+		$("#editTransaksiBiaya").modal("show");
+	}	
 });
 </script>
 

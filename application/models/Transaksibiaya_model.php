@@ -14,7 +14,7 @@ class Transaksibiaya_model extends CI_Model
 	{
 		$this->db->select('
 			a.id_trans_biaya, a.nilai, a.biaya_id, a.kas_id, a.bukti,
-			d.no_trans, d.tgl, d.keterangan, d.type,
+			d.no_trans, d.tgl, d.keterangan, d.type, d.posted,
 			b.id_biaya, b.akun_id as id_akun_biaya, b.nm as nm_biaya, 
 			c.id_sak, c.id_akun as id_akun_kas, c.nm as nm_kas
 		');
