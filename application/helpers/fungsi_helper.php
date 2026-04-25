@@ -28,6 +28,19 @@ function is_logged_in()
     }
 }
 
+function cek_periode_tutup($tahun, $bulan)
+{
+    $ci = get_instance();
+    $ci->db->select('a.tahun, b.bln, b.stts, b.tgl_tutup, b.posting, b.tgl_posting');
+    $ci->db->from('periode a');
+    $ci->db->join('periode_tutup b', 'a.id_periode = b.periode_id');
+    $ci->db->where('a.tahun', $tahun);
+    $ci->db->where('b.bln', $bulan);
+    $result = $ci->db->get()->result_array();
+
+    return $result;
+}
+
 
 function check_access($role_id, $sub_menu_id)
 {
@@ -84,7 +97,7 @@ function is_keuangan()
     return $status;
 }
 
-function  getBulan($bln){
+function getBulan($bln){
     switch  ($bln){
         case  1:
         return  "Januari";
@@ -135,8 +148,6 @@ function tgl_indo($tanggal) {
     $exp = explode('-', $tanggal);
     return $exp[2] . ' ' . $bulan[(int)$exp[1]] . ' ' . $exp[0];
 }
-
-
     
 function getAllBulan()
 {

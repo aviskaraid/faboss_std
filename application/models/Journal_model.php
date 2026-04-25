@@ -24,6 +24,7 @@ class Journal_model extends CI_Model
 				"tgl"	 		=> $tgl,
 				"keterangan" 	=> $this->input->post('keterangan', true),
 				"bukti" 	    => $bukti_transaksi,
+				"posted"		=> 0,
         		"id_user" 		=> $this->input->post('idUser', true)
 			];
 
@@ -69,13 +70,6 @@ class Journal_model extends CI_Model
 		$this->db->insert_batch('jurnal_detail', $result);		
 	}
 	// tutup insert detail jurnal
-
-
-
-
-
-
-
 
 	// bisa dipakai untuk otomatis beberapa menu
 	public function generate_no_trans($reset, $type_trans, $tanggal = null)
@@ -138,6 +132,7 @@ class Journal_model extends CI_Model
 			"tgl"	 		=> $tgl,
 			"keterangan" 	=> $deskripsi,
 			"bukti" 	    => "",
+			"posted"		=> 0,
 			"id_user" 		=> $id_user,
 		);
 		$this->db->insert('jurnal', $dt_insert);
@@ -151,6 +146,7 @@ class Journal_model extends CI_Model
 			"no_trans" 		=> $no_trans,
 			"tgl"	 		=> $tgl,
 			"keterangan" 	=> $deskripsi,
+			"posted"		=> 0,
 			"id_user" 		=> $id_user,
 		);
 
@@ -194,16 +190,6 @@ class Journal_model extends CI_Model
 
 		$this->db->insert_batch('jurnal_detail', $result);		
 	}
-
-	// tutup
-
-
-
-
-
-
-
-
 
 	// datatables server side jurnal umum
     var $column_order = array(
@@ -403,6 +389,7 @@ class Journal_model extends CI_Model
 				"no_trans" 		=> $this->input->post('no_urut', true),
 				"tgl"	 		=> $tgl,
 				"keterangan" 	=> $this->input->post('keterangan', true),
+				"posted"		=> 0,
         		"id_user" 		=> $this->input->post('idUser', true)
 			];
 		} else {
@@ -411,6 +398,7 @@ class Journal_model extends CI_Model
 				"tgl"	 		=> $tgl,
 				"keterangan" 	=> $this->input->post('keterangan', true),
 				"bukti" 		=> $bukti_transaksi,
+				"posted"		=> 0,
         		"id_user" 		=> $this->input->post('idUser', true)
 			];
 		}

@@ -177,16 +177,9 @@
   <div class="sidebar-heading">Proses Periodikal</div>
 
   <li class="nav-item">
-    <a class="nav-link" href="#">
-      <i class="fa-regular fa-folder"></i>
-      <span>Posting</span>
-    </a>
-  </li>
-
-  <li class="nav-item">
-    <a class="nav-link pt-0" href="#">
-      <i class="fa-regular fa-folder-open"></i>
-      <span>Unposting</span>
+    <a class="nav-link" href="<?= base_url('posting'); ?>">
+      <i class="fa-solid fa-check-to-slot"></i>
+      <span>Posting / Unposting</span>
     </a>
   </li>
 

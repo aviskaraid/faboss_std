@@ -47,13 +47,13 @@
 						      <td width="400px"><?= (!is_null($row['tgl_tutup'])) ? $row['tgl_tutup'] : 'Periode Bulan Belum Ditutup'; ?></td>
 						      <td width="80px">
 						      	<?php if($row['stts'] == 0) { ?>
-
-							      		<a href="" class="badge badge-danger tutup-buku" data-toggle="modal" data-target="#deleteKas"
-							      			data-id_periode_tutup="<?= $row['id_periode_tutup']; ?>">
+							      		<a href="" class="badge badge-danger tutup-buku" data-toggle="modal" data-target="#tutupBuku"
+							      			data-id_periode_tutup="<?= $row['id_periode_tutup']; ?>"
+											data-bulan="<?= getBulan($row['bln']); ?>">
 							      			<span class="icon text-white-50">
-													  	<i class="fas fa-fw fa-trash"></i>
-													</span>
-													<span class="text">Tutup Buku</span>
+												<i class="fas fa-fw fa-trash"></i>
+											</span>
+											<span class="text">Tutup Buku</span>
 							      		</a>
 
 						      	<?php } else { ?>
@@ -77,15 +77,12 @@
 <!-- End of Main Content -->
 
 
-
-
-
 <!-- Modal -->
-<div class="modal fade" id="deleteKas" tabindex="-1" role="dialog" aria-labelledby="ubahKasLabel" aria-hidden="true" >
+<div class="modal fade" id="tutupBuku" tabindex="-1" role="dialog" aria-labelledby="tutupBukuLabel" aria-hidden="true" >
   <div class="modal-dialog modal-md" role="document">
     <div class="modal-content">
       	<div class="modal-header">
-        	<h5 class="modal-title" id="ubahKasLabel">Closing Bulanan</h5>
+        	<h5 class="modal-title" id="tutupBukuLabel">Tutup Buku Bulanan</h5>
       	</div>
       	<form action="<?= base_url('periode/tutup_periode_bulanan'); ?>" method="post">
       	<div class="modal-body">
@@ -97,7 +94,10 @@
 							<tbody>
 								<tr>
 									<td>Periode Akuntansi</td>
-									<td class="text-right">November 2025</td>
+									<td class="text-right">
+										<span id="periode_bulan"></span> - 
+										<span id="periode_tahun"><?= $dtPeriodeAkun['tahun']; ?></span>									
+									</td>
 								</tr>
 								<tr>
 									<td>Tanggal Closing</td>
@@ -154,9 +154,11 @@
 		$('.bootstrap-select').selectpicker();
 
 		$('.tutup-buku').on('click',function(){
+			var bulan = $(this).data('bulan');			
 			const id_periode_tutup = $(this).data('id_periode_tutup');
 
 			$("#id_periode_tutup").val(id_periode_tutup);
+			$("#periode_bulan").text(bulan);
 		});
 
 	});
