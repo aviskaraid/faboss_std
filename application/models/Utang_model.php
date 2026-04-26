@@ -18,6 +18,7 @@ class Utang_model extends CI_Model
 			b.no_trans,
 			b.type,
 			b.tgl,
+			b.posted,
 			c.nama_supplier'
 
 		);
@@ -47,11 +48,21 @@ class Utang_model extends CI_Model
 		return $this->db->get()->row_array();
 	}
 
+	public function get_bayar_posted($id_utang_bayar)
+	{
+		$this->db->select('a.id_utang_bayar, a.jurnal_id, b.posted');
+		$this->db->from('utang_bayar a');
+		$this->db->join('jurnal b', 'a.jurnal_id = b.id_jurnal', 'left');
+		$this->db->where_in('a.id_utang_bayar', $id_utang_bayar);
+		return $this->db->get()->result_array();
+	}
+
 	public function get_terbayar($id_utang)
 	{
-		$this->db->select('a.*, b.nm');
+		$this->db->select('a.*, b.nm, c.posted');
 		$this->db->from('utang_bayar a');
 		$this->db->join('set_account_kas b', 'a.kas_id = b.id_sak', 'left');
+		$this->db->join('jurnal c', 'a.jurnal_id = c.id_jurnal', 'left');
 		$this->db->where_in('a.utang_id', $id_utang);
 		return $this->db->get()->result_array();
 	}

@@ -496,8 +496,6 @@ $(document).on('click', '.btn-delete', function (e) {
 		return;
 	} else {
 
-	
-
 		if (!tgl) {
 			Swal.fire('Error', 'Tanggal transaksi tidak ditemukan', 'error');
 			return;

@@ -18,6 +18,7 @@ class Piutang_model extends CI_Model
 			b.no_trans,
 			b.type,
 			b.tgl,
+			b.posted,
 			c.nama_customer'
 
 		);
@@ -46,12 +47,21 @@ class Piutang_model extends CI_Model
 		return $this->db->get()->row_array();
 	}
 
+	public function get_bayar_posted($id_piutang_bayar)
+	{
+		$this->db->select('a.id_piutang_bayar, a.jurnal_id, b.posted');
+		$this->db->from('piutang_bayar a');
+		$this->db->join('jurnal b', 'a.jurnal_id = b.id_jurnal', 'left');
+		$this->db->where_in('a.id_piutang_bayar', $id_piutang_bayar);
+		return $this->db->get()->result_array();
+	}
 
 	public function get_terbayar($id_piutang)
 	{
-		$this->db->select('a.*, b.nm');
+		$this->db->select('a.*, b.nm, c.posted');
 		$this->db->from('piutang_bayar a');
 		$this->db->join('set_account_kas b', 'a.kas_id = b.id_sak', 'left');
+		$this->db->join('jurnal c', 'a.jurnal_id = c.id_jurnal', 'left');
 		$this->db->where_in('a.piutang_id', $id_piutang);
 		return $this->db->get()->result_array();
 	}

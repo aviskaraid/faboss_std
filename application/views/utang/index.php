@@ -173,7 +173,6 @@
 										<a href="javascript:void(0)" 
 											class="badge badge-warning editUtang"											
 											data-toggle="modal" 
-											data-target="#editUtang"
 											data-id_utang="<?= $row['id_utang'] ?>"
 											data-no_ref="<?= $row['no_ref'] ?>"
 											data-tgl_invoice="<?= convertDbdateToDate($row['tgl_invoice']) ?>"
@@ -183,14 +182,19 @@
 											data-id_supplier="<?= $row['id_supplier'] ?>"
 											data-id_biaya="<?= $row['id_biaya'] ?>"
 											data-bukti="<?= $row['bukti'] ?>"
-											data-bukti_url="<?= base_url('assets/file/bukti/'.$row['bukti']) ?>">
-											>
+											data-bukti_url="<?= base_url('assets/file/bukti/'.$row['bukti']) ?>"
+											data-posted="<?= $row['posted'] ?>"											
+										>
 											<i class="fas fa-fw fa-edit"></i> Edit
 										</a>
 
 										<!-- DELETE -->
 										<a href="#" 
-											class="badge badge-danger btn-delete" data-id="<?= $row['id_utang']; ?>" data-tgl_invoice="<?= $row['tgl_invoice']; ?>">
+											class="badge badge-danger btn-delete" 
+											data-id="<?= $row['id_utang']; ?>" 
+											data-tgl_invoice="<?= $row['tgl_invoice']; ?>"
+											data-posted="<?= $row['posted']; ?>"
+										>
 											<span class="icon text-white-50">
 											<i class="fas fa-fw fa-trash"></i>
 											</span> 
@@ -315,7 +319,8 @@ $(document).on('click', '.btn-detail', function () {
 			                            class="btn btn-sm btn-danger btn-hapus-pelunasan"
 			                            data-id="${row.id_utang_bayar}"
 			                            data-tgl="${tgl}"
-			                            data-utang="${id_utang}">
+			                            data-utang="${id_utang}"
+										data-posted="${row.posted}">
 			                            <i class="fas fa-trash"></i>
 			                        </button>
 			                    </td>
@@ -339,67 +344,76 @@ $(document).on('click', '.btn-detail', function () {
 $(document).on('click', '.btn-hapus-pelunasan', function () {
     let id_pelunasan = $(this).data('id');
     let tgl = $(this).data('tgl');
-    let utang   = $(this).data('utang');
-    
-	if (!tgl) {
-        Swal.fire('Error', 'Tanggal transaksi tidak ditemukan', 'error');
-        return;
-    }
+    let id_utang   = $(this).data('utang');
+	let posted = $(this).data('posted');
+    if (posted) {
+		Swal.fire({
+			icon: 'error',
+			title: 'Pembayaran Sudah Diposting',
+			text: 'Pembayaran ini sudah diposting dan tidak bisa dihapus'
+		});
+		return;
+	} else {
+		if (!tgl) {
+			Swal.fire('Error', 'Tanggal transaksi tidak ditemukan', 'error');
+			return;
+		}
 
-     // 1️⃣ CEK PERIODE DULU
-    $.ajax({
-        url: APP.base_url + 'periode/cek_periode',
-        type: 'POST',
-        dataType: 'json',
-        data: { tgl: tgl },
-        success: function (res) {
+		// 1️⃣ CEK PERIODE DULU
+		$.ajax({
+			url: APP.base_url + 'periode/cek_periode',
+			type: 'POST',
+			dataType: 'json',
+			data: { tgl: tgl },
+			success: function (res) {
 
-            if (res.closed) {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Periode Ditutup',
-                    text: 'Transaksi ini berada di periode yang sudah ditutup dan tidak bisa dihapus'
-                });
-                return;
-            }
+				if (res.closed) {
+					Swal.fire({
+						icon: 'error',
+						title: 'Periode Ditutup',
+						text: 'Transaksi ini berada di periode yang sudah ditutup dan tidak bisa dihapus'
+					});
+					return;
+				}
 
-		    Swal.fire({
-		        title: 'Hapus Pelunasan?',
-		        text: 'Data yang dihapus tidak bisa dikembalikan',
-		        icon: 'warning',
-		        showCancelButton: true,
-		        confirmButtonText: 'Ya, Hapus',
-		        cancelButtonText: 'Batal'
-		    }).then((result) => {
-		        if (result.isConfirmed) {
+				Swal.fire({
+					title: 'Hapus Pelunasan?',
+					text: 'Data yang dihapus tidak bisa dikembalikan',
+					icon: 'warning',
+					showCancelButton: true,
+					confirmButtonText: 'Ya, Hapus',
+					cancelButtonText: 'Batal'
+				}).then((result) => {
+					if (result.isConfirmed) {
 
-		            $.ajax({
-		                url: "<?= base_url('utang/hapus_pelunasan'); ?>",
-		                type: "POST",
-		                dataType: "json",
-		                data: { id_pelunasan: id_pelunasan },
-		                success: function (res) {
+						$.ajax({
+							url: "<?= base_url('utang/hapus_pelunasan'); ?>",
+							type: "POST",
+							dataType: "json",
+							data: { id_pelunasan: id_pelunasan },
+							success: function (res) {
 
-		                    if (res.status) {
-		                        Swal.fire({
-						            icon: 'success',
-						            title: 'Berhasil',
-						            text: 'Pelunasan berhasil dihapus'
-						        }).then(() => {
-						            // 🔁 redirect ke daftar utang
-						            window.location.href = APP.base_url + 'utang';
-						        });
-		                    } else {
-		                        Swal.fire('Gagal', res.message, 'error');
-		                    }
-		                }
-		            });
+								if (res.status) {
+									Swal.fire({
+										icon: 'success',
+										title: 'Berhasil',
+										text: 'Pelunasan berhasil dihapus'
+									}).then(() => {
+										// 🔁 redirect ke daftar utang
+										window.location.href = APP.base_url + 'utang';
+									});
+								} else {
+									Swal.fire('Gagal', res.message, 'error');
+								}
+							}
+						});
 
-		        }
-		    });
+					}
+				});
 
-        }
-    });
+			}
+		});
+	}	
 });
 
 </script>
@@ -910,31 +924,67 @@ $(document).on('click', '.editUtang', function (e) {
 	const id_biaya = $(this).data('id_biaya');
 	const bukti = $(this).data('bukti');
 	const bukti_url = $(this).data('bukti_url');
+	const posted = $(this).data('posted');
 
-	$("#id_utang_edit").val(id_utang);
-    $("#no_ref_edit").val(no_ref);
-	$("#id_supplier_edit").val(id_supplier).trigger('change');
-    $("#id_biaya_edit").val(id_biaya).trigger('change');
-	$("#tgl_invoice_edit").val(tgl_invoice);
-	$("#jt_tempo_edit").val(jt_tempo);
-	$("#nilai_edit").val(formatRupiah(nilai.toString()));
-    $("#deskripsi_edit").val(deskripsi);
-    $("#old_bukti").val(bukti);
-    $("#bukti_url").val(bukti_url);
+	if (posted == 1) {
+		Swal.fire('Error', 'Transaksi sudah diposting dan tidak bisa diedit', 'error');
+		return;
+	} else {
+		if (!tgl_invoice) {
+			Swal.fire('Error', 'Tanggal transaksi wajib diisi', 'error');
+			return;
+		}
 
-	$("#old_bukti").val(bukti);
+		$.ajax({
+			url: APP.base_url + 'periode/cek_periode',
+			type: 'POST',
+			dataType: 'json',
+			data: { tgl: tgl_invoice },
+			success: function (res) {
 
-    if (bukti) {
-        $("#file-exists-area").show();
-        $("#file-upload-area").hide();
-        $("#btn-preview-file").data("url", bukti_url);
-        $("#btn-delete-file").data("file", bukti);
-    } else {
-        $("#file-exists-area").hide();
-        $("#file-upload-area").show();
-    }
+				if (res.closed) {
+					Swal.fire({
+						icon: 'error',
+						title: 'Periode Ditutup',
+						text: 'Tanggal transaksi berada di periode yang sudah ditutup'
+					});
+					return;
+				}
+
+				// jika lolos → submit
+				form.submit();
+			},
+			error: function () {
+				Swal.fire('Error', 'Gagal cek periode', 'error');
+			}
+		});
+
+		$("#id_utang_edit").val(id_utang);
+		$("#no_ref_edit").val(no_ref);
+		$("#id_supplier_edit").val(id_supplier).trigger('change');
+		$("#id_biaya_edit").val(id_biaya).trigger('change');
+		$("#tgl_invoice_edit").val(tgl_invoice);
+		$("#jt_tempo_edit").val(jt_tempo);
+		$("#nilai_edit").val(formatRupiah(nilai.toString()));
+		$("#deskripsi_edit").val(deskripsi);
+		$("#old_bukti").val(bukti);
+		$("#bukti_url").val(bukti_url);
+
+		$("#old_bukti").val(bukti);
+
+		if (bukti) {
+			$("#file-exists-area").show();
+			$("#file-upload-area").hide();
+			$("#btn-preview-file").data("url", bukti_url);
+			$("#btn-delete-file").data("file", bukti);
+		} else {
+			$("#file-exists-area").hide();
+			$("#file-upload-area").show();
+		}
+
+		$('#editUtang').modal('show');
 	
-	
+	}
 });
 
 $('#editUtang').on('hidden.bs.modal', function () {
@@ -1077,51 +1127,58 @@ $(document).on('click', '.btn-delete', function (e) {
 
     let id  = $(this).data('id');
     let tgl = $(this).data('tgl_invoice');
+	let posted = $(this).data('posted');
 
-    if (!tgl) {
-        Swal.fire('Error', 'Tanggal transaksi tidak ditemukan', 'error');
-        return;
-    }
+	if (posted == 1) {
+		Swal.fire('Error', 'Transaksi sudah diposting dan tidak bisa dihapus', 'error');
+		return;	
+	} else {
 
-    // 1️⃣ CEK PERIODE DULU
-    $.ajax({
-        url: APP.base_url + 'periode/cek_periode',
-        type: 'POST',
-        dataType: 'json',
-        data: { tgl: tgl },
-        success: function (res) {
+		if (!tgl) {
+			Swal.fire('Error', 'Tanggal transaksi tidak ditemukan', 'error');
+			return;
+		}
 
-            if (res.closed) {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Periode Ditutup',
-                    text: 'Transaksi ini berada di periode yang sudah ditutup dan tidak bisa dihapus'
-                });
-                return;
-            }
+		// 1️⃣ CEK PERIODE DULU
+		$.ajax({
+			url: APP.base_url + 'periode/cek_periode',
+			type: 'POST',
+			dataType: 'json',
+			data: { tgl: tgl },
+			success: function (res) {
 
-            // 2️⃣ KONFIRMASI HAPUS
-            Swal.fire({
-                title: 'Yakin ingin menghapus?',
-                text: 'Data Transaksi Hutang yang dihapus tidak bisa dikembalikan!',
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#d33',
-                cancelButtonColor: '#3085d6',
-                confirmButtonText: 'Ya, hapus!',
-                cancelButtonText: 'Batal'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    // 3️⃣ REDIRECT DELETE
-                    window.location.href = APP.base_url + 'utang/delete/' + id;
-                }
-            });
+				if (res.closed) {
+					Swal.fire({
+						icon: 'error',
+						title: 'Periode Ditutup',
+						text: 'Transaksi ini berada di periode yang sudah ditutup dan tidak bisa dihapus'
+					});
+					return;
+				}
 
-        },
-        error: function () {
-            Swal.fire('Error', 'Gagal cek periode', 'error');
-        }
-    });
+				// 2️⃣ KONFIRMASI HAPUS
+				Swal.fire({
+					title: 'Yakin ingin menghapus?',
+					text: 'Data Transaksi Hutang yang dihapus tidak bisa dikembalikan!',
+					icon: 'warning',
+					showCancelButton: true,
+					confirmButtonColor: '#d33',
+					cancelButtonColor: '#3085d6',
+					confirmButtonText: 'Ya, hapus!',
+					cancelButtonText: 'Batal'
+				}).then((result) => {
+					if (result.isConfirmed) {
+						// 3️⃣ REDIRECT DELETE
+						window.location.href = APP.base_url + 'utang/delete/' + id;
+					}
+				});
+
+			},
+			error: function () {
+				Swal.fire('Error', 'Gagal cek periode', 'error');
+			}
+		});
+	}	
 });
 
 </script>
