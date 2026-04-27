@@ -128,7 +128,6 @@
 (function (window) {
     console.log('fungsi-helper.js loaded');
     window.getBulan = function (bln) {
-        alert('fungsi-helper.js jalan');
         const bulan = [
             'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
             'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'

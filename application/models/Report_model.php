@@ -36,7 +36,7 @@ class Report_model extends CI_Model
 	public function getData()
 	{
 		$this->db->select('
-			jurnal.id_jurnal, jurnal.no_trans, jurnal.tgl, jurnal.keterangan, 
+			jurnal.id_jurnal, jurnal.no_trans, jurnal.tgl, jurnal.keterangan, jurnal.type, 
 			jurnal_detail.id_perkiraan, jurnal_detail.nilai, jurnal_detail.id_akun,
 			akun.nama, akun.noakun, perkiraan.nama AS perkiraan,
 			kelompok_akun.kel_akun');
@@ -45,6 +45,7 @@ class Report_model extends CI_Model
 		$this->db->join('akun', 'jurnal_detail.id_akun = akun.id_akun');
 		$this->db->join('kelompok_akun', 'akun.id_kelompok_akun = kelompok_akun.id_kelompok_akun');
 		$this->db->join('perkiraan', 'jurnal_detail.id_perkiraan = perkiraan.id_perkiraan');
+		$this->db->where('jurnal.posted', 1);
 		$this->db->order_by('jurnal.tgl', 'ASC');
 		$query = $this->db->get()->result_array();
 
@@ -218,6 +219,7 @@ class Report_model extends CI_Model
 		$this->db->join('kategori', 'akun_sumber.id_kategori = kategori.id_kategori');
 		$this->db->join('kelompok_akun', 'akun.id_kelompok_akun = kelompok_akun.id_kelompok_akun');
 		$this->db->join('perkiraan', 'jurnal_detail.id_perkiraan = perkiraan.id_perkiraan');
+		$this->db->where('jurnal.posted',1);
 		$this->db->order_by('jurnal.tgl', 'ASC');
 		$query = $this->db->get()->result_array();
 

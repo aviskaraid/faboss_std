@@ -4,9 +4,9 @@ class Labarugi_model extends CI_Model
     public function getLabaRugi($bulan, $tahun, $mode)
     {
         if ($mode == 'sd_bulan') {
-            $periode_where = "YEAR(j.tgl) = $tahun AND MONTH(j.tgl) <= $bulan";
+            $periode_where = "YEAR(j.tgl) = $tahun AND MONTH(j.tgl) <= $bulan AND j.posted=1";
         } else {
-            $periode_where = "YEAR(j.tgl) = $tahun AND MONTH(j.tgl) = $bulan";
+            $periode_where = "YEAR(j.tgl) = $tahun AND MONTH(j.tgl) = $bulan AND j.posted=1";
         }
 
         $query = $this->db->query("
@@ -96,7 +96,7 @@ class Labarugi_model extends CI_Model
                 a.nama,
                 SUM(
                     CASE 
-                        WHEN $periode THEN
+                        WHEN $periode AND j.posted = 1 THEN
                             CASE
                                 WHEN k.tipe = 'L' THEN d.nilai
                                 WHEN k.tipe = 'B' THEN d.nilai * -1

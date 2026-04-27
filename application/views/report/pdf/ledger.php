@@ -32,16 +32,16 @@ class PDF extends PDF_MC_Table{
         $this->Ln(3);
         $this->setFont('Arial','B',9);
         $this->setFillColor(255,255,255);
-        $this->cell(19,6,'','LTR',0,'C',1);
-        $this->cell(23,6,'','LTR',0,'C',1);
-        $this->cell(40,6,'','LTR',0,'C',1);
+        $this->cell(18,6,'','LTR',0,'C',1);
+        $this->cell(28,6,'','LTR',0,'C',1);
+        $this->cell(38,6,'','LTR',0,'C',1);
         $this->cell(27,6,'','LTR',0,'C',1);
         $this->cell(27,6,'','LTR',0,'C',1);
         $this->cell(54,6,'Saldo Akhir',1,1,'C',1);
 
-        $this->cell(19,6,'Tanggal','LBR',0,'C',1);
-        $this->cell(23,6,'Nomor','LBR',0,'C',1);
-        $this->cell(40,6,'Keterangan','LBR',0,'C',1);
+        $this->cell(18,6,'Tanggal','LBR',0,'C',1);
+        $this->cell(28,6,'No. Transaksi','LBR',0,'C',1);
+        $this->cell(38,6,'Keterangan','LBR',0,'C',1);
         $this->cell(27,6,'Debit','LBR',0,'C',1);
         $this->cell(27,6,'Kredit','LBR',0,'C',1);
 
@@ -51,7 +51,7 @@ class PDF extends PDF_MC_Table{
         $this->Ln();
         $this->setFont('Arial','B',9);
         $this->setFillColor(255,255,255); 
-        $this->cell(190,6,'['.$account_data['noakun'].'] '. $account_data['nama'],1,0,'L',1);  
+        $this->cell(192,6,'['.$account_data['noakun'].'] '. $account_data['nama'],1,0,'L',1);  
 
         $totalDebit = 0;
         $totalKredit = 0;
@@ -63,9 +63,9 @@ class PDF extends PDF_MC_Table{
             $this->Ln();
             $this->setFont('Arial','',9);
             $this->setFillColor(255,255,255);   
-            $this->cell(19,6,'',1,0,'L',1);
-            $this->cell(23,6,'',1,0,'C',1);
-            $this->cell(40,6,'Saldo Awal',1,0,'L',1);
+            $this->cell(18,6,'',1,0,'L',1);
+            $this->cell(28,6,'',1,0,'C',1);
+            $this->cell(38,6,'Saldo Awal',1,0,'L',1);
             if($account_data['id_perkiraan'] == 1){
                 $this->cell(27,6,'Rp. '.number_format($sum,0,',','.'),1,0,'R',1);
                 $this->cell(27,6,'',1,0,'L',1);
@@ -87,7 +87,7 @@ class PDF extends PDF_MC_Table{
 
             $this->Ln();
             $this->setFont('Arial','',9);
-            $this->SetWidths(Array(19,23,40,27,27,27,27));
+            $this->SetWidths(Array(18,28,38,27,27,27,27));
             $this->SetAligns(Array('C','C','L','R','R','R','R'));
             $this->SetLineHeight(5);
             foreach ($journal_data as $data) {
@@ -100,7 +100,7 @@ class PDF extends PDF_MC_Table{
                     if($sum >= 0){
                         $this->Row(Array(
                             date("d/n/Y", strtotime($data['tgl'])),
-                            $data['no_trans'],
+                            $data['no_trans_format'],
                             $data['keterangan'],
                             'Rp. '.number_format($data['nilai'],0,',','.'),
                             '',
@@ -110,7 +110,7 @@ class PDF extends PDF_MC_Table{
                     } else {
                         $this->Row(Array(
                             date("d/n/Y", strtotime($data['tgl'])),
-                            $data['no_trans'],
+                            $data['no_trans_format'],
                             $data['keterangan'],
                             'Rp. '.number_format($data['nilai'],0,',','.'),
                             '',
@@ -125,7 +125,7 @@ class PDF extends PDF_MC_Table{
                     if($sum >= 0){
                         $this->Row(Array(
                             date("d/n/Y", strtotime($data['tgl'])),
-                            $data['no_trans'],
+                            $data['no_trans_format'],
                             $data['keterangan'],
                             '',
                             'Rp. '.number_format($data['nilai'],0,',','.'),
@@ -135,7 +135,7 @@ class PDF extends PDF_MC_Table{
                     } else {
                         $this->Row(Array(
                             date("d/n/Y", strtotime($data['tgl'])),
-                            $data['no_trans'],
+                            $data['no_trans_format'],
                             $data['keterangan'],
                             '',
                             'Rp. '.number_format($data['nilai'],0,',','.'),
@@ -148,7 +148,7 @@ class PDF extends PDF_MC_Table{
 
             $this->setFont('Arial','B',8);
             $this->setFillColor(255,255,255);   
-            $this->cell(82,6,'['.$account_data['noakun'].'] '.$account_data['nama'].' | Saldo Akhir',1,0,'R',1);
+            $this->cell(84,6,'['.$account_data['noakun'].'] '.$account_data['nama'].' | Saldo Akhir',1,0,'R',1);
             $this->setFont('Arial','B',9);
             $this->setFillColor(255,255,255); 
             $this->cell(27,6,'Rp. '.number_format($totalDebit,0,',','.'),1,0,'R',1);

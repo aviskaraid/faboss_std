@@ -50,7 +50,7 @@ $sheet->getStyle('A3:G3')->applyFromArray($style_col);
 
 // tabel data
 $sheet->setCellValue('A5', "Tanggal"); 
-$sheet->setCellValue('B5', "Nomor"); 
+$sheet->setCellValue('B5', "No. Transaksi"); 
 $sheet->setCellValue('C5', "Keterangan"); 
 $sheet->setCellValue('D5', "Debit");
 $sheet->setCellValue('E5', "Kredit"); 
@@ -118,7 +118,7 @@ $numrow = 6; // Set baris pertama untuk isi tabel adalah baris ke 4
         foreach ($journal_data as $data) {
 
 	    	$sheet->setCellValue('A'.$numrow, date("d/n/Y", strtotime($data['tgl'])));
-	    	$sheet->setCellValue('B'.$numrow, $data['no_trans']);
+	    	$sheet->setCellValue('B'.$numrow, $data['no_trans_format']);
 	    	$sheet->setCellValue('C'.$numrow, $data['keterangan']);
 
 	        if($data['id_perkiraan'] == 1) {
@@ -204,7 +204,7 @@ $numrow = 6; // Set baris pertama untuk isi tabel adalah baris ke 4
 
 // Set width kolom
 $sheet->getColumnDimension('A')->setWidth(15); // Set width kolom A
-$sheet->getColumnDimension('B')->setWidth(15); // Set width kolom B
+$sheet->getColumnDimension('B')->setWidth(25); // Set width kolom B
 $sheet->getColumnDimension('C')->setWidth(45); // Set width kolom C
 $sheet->getColumnDimension('D')->setWidth(20); // Set width kolom D
 $sheet->getColumnDimension('E')->setWidth(20); // Set width kolom E

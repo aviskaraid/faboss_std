@@ -64,6 +64,7 @@ class Neracasaldo_model extends CI_Model {
                 LEFT JOIN jurnal j ON j.id_jurnal = jd.id_jurnal
                 LEFT JOIN kelompok_akun k ON a.id_kelompok_akun = k.id_kelompok_akun
                 WHERE a.id_akun NOT IN (?, ?)
+                AND j.posted = 1
                 GROUP BY 
                     a.id_akun, a.noakun, a.nama, a.saldo_awal, 
                     a.id_perkiraan, a.id_kelompok_akun, k.tipe

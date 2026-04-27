@@ -8,14 +8,16 @@ class Report extends CI_Controller
 		parent::__construct();
 		is_logged_in();
 		$this->load->model('Report_model','report');
+		$this->load->model('Masterdata_model','masterdata');
+		$this->load->model('Admin_model', 'admin');
+		$this->load->model('Setting_model','setting');
 	}
 
 	public function index()
 	{
 		$data['title'] = 'Buku Besar';
 		$data['user'] = $this->db->get_where('user', ['email' => $this->session->userdata('email')])->row_array();
-		$data['profile'] = $this->db->get_where('profile', ['id_profile' => 1])->row_array();
-		$this->load->model('Masterdata_model','masterdata');
+		$data['profile'] = $this->db->get_where('profile', ['id_profile' => 1])->row_array();		
 
 		//date
 		date_default_timezone_set('Asia/Jakarta');
@@ -45,8 +47,6 @@ class Report extends CI_Controller
 			$tglAkhir = convertDateToDbdate($this->input->post('tglAkhir', true));
 			$data['tglAwal'] = $tglAwal;
 			$data['tglAkhir'] = $tglAkhir;
-
-			$this->load->model('Masterdata_model', 'masterdata');
 			
 			// mencari saldo awal
 			$tgl_awal = date('Y-m-d', strtotime('1/1/1971'));
@@ -99,13 +99,35 @@ class Report extends CI_Controller
 			}
 			// Tutup memperoleh saldo awal
 
+			
+
 			$data['tglAwal'] = $tglAwal;
 			$data['tglAkhir'] = $tglAkhir;
 
-
 			$array = array('jurnal_detail.id_akun' => $idAkun, 'jurnal.tgl >=' => $tglAwal, 'jurnal.tgl <=' => $tglAkhir);
 			$this->db->where($array);
-			$data['journal_data'] =  $this->report->getData($idAkun, $tglAwal, $tglAkhir);
+
+			$journal_data_bb = $this->report->getData($idAkun, $tglAwal, $tglAkhir);
+			// Inject format nomor transaksi
+			foreach ($journal_data_bb as $key => $item) {
+				// Ambil bulan & tahun dari tanggal
+				$bulan = date('m', strtotime($item['tgl']));
+				$tahun = date('Y', strtotime($item['tgl']));
+
+				// Ambil setting penomoran
+				$setJu = $this->setting->getPenomoranByIdMenu($item['type']);
+
+				// Format nomor transaksi
+				$no_trans_format = sprintf(
+					'%0'.$setJu['panjang_nomor'].'d',
+					(int)$item['no_trans']
+				).'/'.$setJu['prefix'].'/'.$bulan.'/'.$tahun;
+
+				// Tambahkan ke array
+				$journal_data_bb[$key]['no_trans_format'] = $no_trans_format;
+			}
+
+			$data['journal_data'] = $journal_data_bb;
 
 			$data['status'] = 1;
 			$data['title'] = 'Buku Besar';
@@ -129,11 +151,7 @@ class Report extends CI_Controller
 		$idAkun = $this->input->post('namaAkun', true);
 		$tglAwal = convertDateToDbdate($this->input->post('tglAwal', true));
 		$tglAkhir = convertDateToDbdate($this->input->post('tglAkhir', true));
-
-		$this->load->model('Masterdata_model', 'masterdata');
-		$this->load->model('Admin_model', 'admin');
-
-
+		
 		// mencari saldo awal
 		$tgl_awal = date('Y-m-d', strtotime('1/1/1971'));
 		$tgl_akhir = date('Y-m-d', strtotime('-1 days', strtotime($tglAwal)));
@@ -186,7 +204,27 @@ class Report extends CI_Controller
 
 		$array = array('jurnal_detail.id_akun' => $idAkun, 'jurnal.tgl >=' => $tglAwal, 'jurnal.tgl <=' => $tglAkhir);
 		$this->db->where($array);
-		$data['journal_data'] =  $this->report->getData($idAkun, $tglAwal, $tglAkhir);
+
+		$journal_data_bb = $this->report->getData($idAkun, $tglAwal, $tglAkhir);
+		// Inject format nomor transaksi
+		foreach ($journal_data_bb as $key => $item) {
+			// Ambil bulan & tahun dari tanggal
+			$bulan = date('m', strtotime($item['tgl']));
+			$tahun = date('Y', strtotime($item['tgl']));
+
+			// Ambil setting penomoran
+			$setJu = $this->setting->getPenomoranByIdMenu($item['type']);
+
+			// Format nomor transaksi
+			$no_trans_format = sprintf(
+				'%0'.$setJu['panjang_nomor'].'d',
+				(int)$item['no_trans']
+			).'/'.$setJu['prefix'].'/'.$bulan.'/'.$tahun;
+
+			// Tambahkan ke array
+			$journal_data_bb[$key]['no_trans_format'] = $no_trans_format;
+		}
+		$data['journal_data'] = $journal_data_bb;
 
 		$data['tglAwal'] = $tglAwal;
 		$data['tglAkhir'] = $tglAkhir;

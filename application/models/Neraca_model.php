@@ -32,7 +32,7 @@ class Neraca_model extends CI_Model {
 
                     SUM(
                         CASE
-                            WHEN j.tgl <= ? THEN
+                            WHEN j.tgl <= ? AND j.posted = 1 THEN
                                 CASE
                                     WHEN k.tipe = 'A' AND jd.id_perkiraan = 1 THEN jd.nilai
                                     WHEN k.tipe = 'A' AND jd.id_perkiraan = 2 THEN jd.nilai * -1
@@ -153,6 +153,9 @@ class Neraca_model extends CI_Model {
         // Hanya akun Laba & Beban
         $this->db->where_in('k.tipe', ['L','B']);
 
+        // Hanya data sudah posting
+        $this->db->where('j.posted',1);
+
         $row = $this->db->get()->row_array();
 
         return (float) $row['laba_berjalan'];
@@ -174,6 +177,8 @@ class Neraca_model extends CI_Model {
 
         $this->db->where('YEAR(j.tgl) <', $tahun);
         $this->db->where_in('k.tipe', ['L','B']);
+        // hanya data sudah posted
+        $this->db->where('j.posted',1);
 
         return (float) $this->db->get()->row()->laba_ditahan;
     }

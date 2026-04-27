@@ -43,6 +43,7 @@ class Laporankas_model extends CI_Model
 		$this->db->where('a.id_sak', $idAkun);
 		$this->db->where('c.tgl >=', $tglAwal);
 		$this->db->where('c.tgl <=', $tglAkhir);
+		$this->db->where('c.posted', 1);
 
 		$result = $this->db->get()->result_array();
 
